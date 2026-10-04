@@ -6,7 +6,7 @@ export function AdminLayout() {
 	const location = useLocation();
 
 	return (
-		<div className="flex flex-col min-h-screen bg-[--color-bg]">
+		<div className="flex flex-col min-h-screen bg-bg">
 			<ErrorBoundary FallbackComponent={RouteErrorFallback} resetKeys={[location.pathname]}>
 				<main id="main" className="flex-1">
 					<Outlet />

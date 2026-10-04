@@ -1,7 +1,6 @@
 import { BentoGrid } from "@/components/bento/BentoGrid";
 import { BentoSkeleton } from "@/components/bento/BentoSkeleton";
 import { EmptyState } from "@/components/bento/EmptyState";
-import { ProjectCard } from "@/components/bento/ProjectCard";
 import { Pagination } from "@/components/projects/Pagination";
 import { ProjectFilters } from "@/components/projects/ProjectFilters";
 import { useProjects } from "@/hooks/queries/use-projects";
@@ -15,8 +14,8 @@ export default function ProjectsPage() {
 
 	return (
 		<div className="max-w-7xl mx-auto px-4 py-16">
-			<h1 className="text-4xl font-bold text-[--color-fg] mb-2">Proyek</h1>
-			<p className="text-[--color-muted] mb-12">Koleksi proyek-proyek terbaru saya</p>
+			<h1 className="text-4xl font-bold text-fg mb-2">Proyek</h1>
+			<p className="text-muted mb-12">Koleksi proyek-proyek terbaru saya</p>
 
 			{/* Filters */}
 			<ProjectFilters filters={filters} projects={projects} onFiltersChange={setFilters} />
@@ -25,11 +24,7 @@ export default function ProjectsPage() {
 			{isLoading ? (
 				<BentoSkeleton />
 			) : projects.length > 0 ? (
-				<BentoGrid projects={projects}>
-					{projects.map((project) => (
-						<ProjectCard key={project.id} project={project} />
-					))}
-				</BentoGrid>
+				<BentoGrid projects={projects} />
 			) : (
 				<EmptyState />
 			)}

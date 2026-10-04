@@ -11,11 +11,11 @@ interface ProjectMetaProps {
  */
 export function ProjectMeta({ project }: ProjectMetaProps) {
 	return (
-		<div className="space-y-6 border-t border-[--color-border] pt-6">
+		<div className="space-y-6 border-t border-border pt-6">
 			{/* Tech Stack */}
 			{project.tech_stack && project.tech_stack.length > 0 && (
 				<div>
-					<h3 className="text-sm font-semibold text-[--color-fg] mb-3">Teknologi yang Digunakan</h3>
+					<h3 className="text-sm font-semibold text-fg mb-3">Teknologi yang Digunakan</h3>
 					<div className="flex flex-wrap gap-2">
 						{project.tech_stack.map((tech) => (
 							<Badge key={tech}>{tech}</Badge>
@@ -31,7 +31,7 @@ export function ProjectMeta({ project }: ProjectMetaProps) {
 						href={project.demo_url}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="inline-block bg-[--color-accent] text-[--color-bg] px-6 py-3 rounded hover:bg-[--color-accent]/90 transition-colors font-medium"
+						className="inline-block bg-accent text-bg px-6 py-3 rounded hover:bg-accent/90 transition-colors font-medium"
 					>
 						Lihat Demo
 					</a>
@@ -41,7 +41,7 @@ export function ProjectMeta({ project }: ProjectMetaProps) {
 						href={project.repo_url}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="inline-block bg-[--color-surface] border border-[--color-border] text-[--color-fg] px-6 py-3 rounded hover:bg-[--color-surface]/80 transition-colors font-medium"
+						className="inline-block bg-surface border border-border text-fg px-6 py-3 rounded hover:bg-surface/80 transition-colors font-medium"
 					>
 						Lihat Repository
 					</a>
@@ -51,7 +51,7 @@ export function ProjectMeta({ project }: ProjectMetaProps) {
 						href={project.notebook_url}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="inline-block bg-[--color-surface] border border-[--color-border] text-[--color-fg] px-6 py-3 rounded hover:bg-[--color-surface]/80 transition-colors font-medium"
+						className="inline-block bg-surface border border-border text-fg px-6 py-3 rounded hover:bg-surface/80 transition-colors font-medium"
 					>
 						Lihat Notebook
 					</a>

@@ -28,19 +28,19 @@ export default function LoginPage() {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center px-4 bg-[--color-bg]">
+		<div className="min-h-screen flex items-center justify-center px-4 bg-bg">
 			<Card className="w-full max-w-md">
-				<h1 className="text-2xl font-bold text-[--color-fg] mb-6">Login Admin</h1>
+				<h1 className="text-2xl font-bold text-fg mb-6">Login Admin</h1>
 
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 					<div>
-						<label htmlFor="username" className="block text-sm font-medium text-[--color-fg] mb-1">
+						<label htmlFor="username" className="block text-sm font-medium text-fg mb-1">
 							Username
 						</label>
 						<input
 							{...register("username")}
 							type="text"
-							className="w-full px-4 py-2 bg-[--color-bg] border border-[--color-border] rounded text-[--color-fg] focus:outline-none focus:border-[--color-accent]"
+							className="w-full px-4 py-2 bg-bg border border-border rounded text-fg focus:outline-none focus:border-accent"
 							placeholder="username"
 						/>
 						{errors.username && (
@@ -49,13 +49,13 @@ export default function LoginPage() {
 					</div>
 
 					<div>
-						<label htmlFor="password" className="block text-sm font-medium text-[--color-fg] mb-1">
+						<label htmlFor="password" className="block text-sm font-medium text-fg mb-1">
 							Password
 						</label>
 						<input
 							{...register("password")}
 							type="password"
-							className="w-full px-4 py-2 bg-[--color-bg] border border-[--color-border] rounded text-[--color-fg] focus:outline-none focus:border-[--color-accent]"
+							className="w-full px-4 py-2 bg-bg border border-border rounded text-fg focus:outline-none focus:border-accent"
 							placeholder="password"
 						/>
 						{errors.password && (

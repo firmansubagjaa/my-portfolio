@@ -2,19 +2,19 @@ import { Link, NavLink, type NavLinkRenderProps } from "react-router";
 
 export function Header() {
 	return (
-		<header className="bg-[--color-surface] border-b border-[--color-border]">
+		<header className="bg-surface border-b border-border">
 			<nav
 				className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between"
 				aria-label="Navigasi utama"
 			>
-				<Link to="/" className="font-bold text-lg hover:text-[--color-accent]">
+				<Link to="/" className="font-bold text-lg hover:text-accent">
 					Portfolio
 				</Link>
 				<div className="flex gap-6">
 					<NavLink
 						to="/"
 						className={({ isActive }: NavLinkRenderProps) =>
-							`hover:text-[--color-accent] transition-colors ${isActive ? "text-[--color-fg]" : "text-[--color-muted]"}`
+							`hover:text-accent transition-colors ${isActive ? "text-fg" : "text-muted"}`
 						}
 					>
 						{({ isActive }: NavLinkRenderProps) => (
@@ -24,7 +24,7 @@ export function Header() {
 					<NavLink
 						to="/projects"
 						className={({ isActive }: NavLinkRenderProps) =>
-							`hover:text-[--color-accent] transition-colors ${isActive ? "text-[--color-fg]" : "text-[--color-muted]"}`
+							`hover:text-accent transition-colors ${isActive ? "text-fg" : "text-muted"}`
 						}
 					>
 						{({ isActive }: NavLinkRenderProps) => (

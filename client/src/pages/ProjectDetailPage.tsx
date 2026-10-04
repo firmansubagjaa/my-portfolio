@@ -30,25 +30,22 @@ export default function ProjectDetailPage() {
 	if (!project) {
 		return (
 			<div className="max-w-4xl mx-auto px-4 py-16">
-				<p className="text-[--color-muted]">Proyek tidak ditemukan.</p>
+				<p className="text-muted">Proyek tidak ditemukan.</p>
 			</div>
 		);
 	}
 
 	return (
 		<div className="max-w-4xl mx-auto px-4 py-16">
-			<Link
-				to="/projects"
-				className="text-[--color-accent] hover:text-[--color-accent]/80 mb-8 inline-block"
-			>
+			<Link to="/projects" className="text-accent hover:text-accent/80 mb-8 inline-block">
 				← Kembali ke Proyek
 			</Link>
 
-			<h1 className="text-4xl font-bold text-[--color-fg] mb-4">{project.title}</h1>
-			<p className="text-[--color-muted] text-lg mb-6">{project.summary}</p>
+			<h1 className="text-4xl font-bold text-fg mb-4">{project.title}</h1>
+			<p className="text-muted text-lg mb-6">{project.summary}</p>
 
 			{project.content && (
-				<div className="mb-8 text-[--color-fg]">
+				<div className="mb-8 text-fg">
 					<Markdown content={project.content} />
 				</div>
 			)}

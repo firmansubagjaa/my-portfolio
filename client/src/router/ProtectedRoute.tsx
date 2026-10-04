@@ -1,25 +1,24 @@
-import { Navigate } from "react-router";
+// File: /client/src/router/ProtectedRoute.tsx
+import { Navigate, Outlet, useLocation } from "react-router";
 import { Spinner } from "@/components/ui/Spinner";
 import { useMe } from "@/hooks/queries/use-auth";
 
-interface ProtectedRouteProps {
-	children: React.ReactNode;
-}
+// Layout route guarding /admin/*: session is read from GET /auth/me (cookie is HTTP-only)
+export function ProtectedRoute() {
+	const location = useLocation();
+	const { data, isPending, isError } = useMe();
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
-	const { data, isLoading, error } = useMe();
-
-	if (isLoading) {
+	if (isPending) {
 		return (
-			<div className="flex items-center justify-center min-h-screen">
-				<Spinner />
+			<div className="flex min-h-screen items-center justify-center">
+				<Spinner label="Memeriksa sesi" />
 			</div>
 		);
 	}
 
-	if (error || !data) {
-		return <Navigate to="/admin/login" replace />;
+	if (isError || !data) {
+		return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />;
 	}
 
-	return children;
+	return <Outlet />;
 }

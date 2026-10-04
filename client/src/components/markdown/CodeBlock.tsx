@@ -24,7 +24,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
 				const highlighter = await getHighlighter();
 				const html = highlighter.codeToHtml(code, {
 					lang: language,
-					theme: "dark-plus",
+					theme: "vitesse-dark",
 				});
 
 				if (isMounted) {
@@ -46,7 +46,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
 	}, [code, language]);
 
 	return (
-		<pre className="overflow-x-auto rounded bg-[--color-bg] p-4 my-4">
+		<pre className="overflow-x-auto rounded bg-bg p-4 my-4">
 			{highlighted ? (
 				<code
 					dangerouslySetInnerHTML={{ __html: highlighted }}

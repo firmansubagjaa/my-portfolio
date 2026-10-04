@@ -1,54 +1,65 @@
 // File: /client/src/components/bento/ProjectCard.tsx
-"use client";
-
-import { motion } from "motion/react";
 import { Link } from "react-router";
 import { Badge } from "@/components/ui/Badge";
+import { CATEGORY_LABELS } from "@/config/constants";
 import type { ProjectListItemDTO } from "@/types/api";
+
+const MAX_BADGES = 5;
 
 interface ProjectCardProps {
 	project: ProjectListItemDTO;
+	/** Eager-load the thumbnail (use for the first card to speed up LCP) */
+	priority?: boolean;
 }
 
-/**
- * Card component for displaying a project in the bento grid
- * Renders as an article with layout animation support
- */
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project, priority = false }: ProjectCardProps) {
+	const extraTech = project.tech_stack.length - MAX_BADGES;
+
 	return (
-		<motion.article
-			layout
-			className="relative h-full overflow-hidden rounded-lg border border-[--color-border] bg-[--color-surface] transition-colors hover:border-[--color-accent] has-[a:focus-visible]:ring-2"
-		>
-			<Link to={`/projects/${project.slug}`} className="after:absolute after:inset-0 after:z-0">
-				{project.thumbnail_url && (
-					<img
-						src={project.thumbnail_url}
-						alt={project.title}
-						className="aspect-[16/10] h-40 w-full object-cover"
-					/>
+		<article className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-surface transition-colors duration-150 ease-out hover:border-muted has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-accent">
+			{project.thumbnail_url ? (
+				<img
+					src={project.thumbnail_url}
+					alt={project.title}
+					width={1200}
+					height={750}
+					loading={priority ? "eager" : "lazy"}
+					fetchPriority={priority ? "high" : "auto"}
+					decoding="async"
+					className="aspect-[16/10] w-full object-cover"
+				/>
+			) : (
+				<div aria-hidden="true" className="aspect-[16/10] w-full bg-border/40" />
+			)}
+
+			<div className="flex flex-1 flex-col gap-3 p-5">
+				<p className="font-mono text-xs text-muted">{CATEGORY_LABELS[project.category]}</p>
+				<h3 className="text-lg font-semibold text-fg">
+					{/* after:inset-0 makes the whole card clickable with a single tab stop */}
+					<Link
+						to={`/projects/${project.slug}`}
+						className="after:absolute after:inset-0 focus-visible:outline-none"
+					>
+						{project.title}
+					</Link>
+				</h3>
+				<p className="line-clamp-3 text-sm text-muted">{project.summary}</p>
+
+				{project.tech_stack.length > 0 && (
+					<ul className="mt-auto flex flex-wrap gap-2 pt-2" aria-label="Teknologi">
+						{project.tech_stack.slice(0, MAX_BADGES).map((tech) => (
+							<li key={tech}>
+								<Badge>{tech}</Badge>
+							</li>
+						))}
+						{extraTech > 0 && (
+							<li>
+								<Badge>+{extraTech}</Badge>
+							</li>
+						)}
+					</ul>
 				)}
-
-				<div className="relative z-10 flex h-full flex-col justify-between p-4">
-					<div>
-						<h3 className="text-lg font-semibold text-[--color-fg] line-clamp-2">
-							{project.title}
-						</h3>
-						<p className="mt-2 text-sm text-[--color-muted] line-clamp-2">{project.summary}</p>
-					</div>
-
-					<div className="flex flex-wrap gap-2">
-						{project.category && <Badge>{project.category}</Badge>}
-
-						{project.tech_stack &&
-							project.tech_stack.slice(0, 2).map((tech) => (
-								<Badge key={tech} className="text-xs">
-									{tech}
-								</Badge>
-							))}
-					</div>
-				</div>
-			</Link>
-		</motion.article>
+			</div>
+		</article>
 	);
 }

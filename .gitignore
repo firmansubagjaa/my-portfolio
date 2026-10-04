@@ -6,3 +6,10 @@ dist/
 !.env.example
 *.log
 .DS_Store
+
+# Compiled JS must never sit next to TS sources (Vite would resolve it first)
+client/src/**/*.js
+server/src/**/*.js
+
+# Local git worktrees created by workflows
+.worktrees/

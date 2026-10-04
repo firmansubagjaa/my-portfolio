@@ -1,5 +1,6 @@
 // File: /server/src/controllers/project.controller.ts
 import { Hono } from "hono";
+import { z } from "zod";
 import { validate } from "../utils/validator";
 import { publicProjectListQuerySchema, slugSchema } from "../shared/dto";
 import { listProjects, findPublicProjectBySlug } from "../models/project.model";
@@ -37,7 +38,7 @@ projectController.get(
 // GET /api/v1/projects/:slug - Get project detail
 projectController.get(
 	"/:slug",
-	validate("param", { slug: slugSchema }),
+	validate("param", z.object({ slug: slugSchema })),
 	async (c) => {
 		const validData = c.req.valid("param");
 		const { slug } = validData;

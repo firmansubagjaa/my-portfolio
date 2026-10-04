@@ -12,6 +12,15 @@ export class ApiClientError extends Error {
 }
 
 export async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
+	const envelope = await apiFetchEnvelope<T>(url, options);
+	return envelope.data;
+}
+
+// Returns the full success envelope (data + pagination) for paginated endpoints
+export async function apiFetchEnvelope<T>(
+	url: string,
+	options?: RequestInit,
+): Promise<ApiSuccess<T>> {
 	const response = await fetch(url, {
 		...options,
 		credentials: "include",
@@ -28,8 +37,7 @@ export async function apiFetch<T>(url: string, options?: RequestInit): Promise<T
 		throw new ApiClientError(response.status, error.category, error.errors);
 	}
 
-	const success = data as ApiSuccess<T>;
-	return success.data;
+	return data as ApiSuccess<T>;
 }
 
 export function apiGet<T>(url: string, options?: RequestInit): Promise<T> {
