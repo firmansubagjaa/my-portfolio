@@ -1,4 +1,7 @@
 {
+	"files": {
+		"ignoreUnknown": false
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -25,5 +28,16 @@
 		"parser": {
 			"jsxEverywhere": true
 		}
-	}
+	},
+	"overrides": [
+		{
+			"includes": ["dist/**"],
+			"linter": {
+				"enabled": false
+			},
+			"formatter": {
+				"enabled": false
+			}
+		}
+	]
 }

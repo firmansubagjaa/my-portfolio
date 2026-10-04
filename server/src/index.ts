@@ -7,6 +7,7 @@ import { cors } from "hono/cors";
 import { env } from "./config/env";
 import { healthController } from "./controllers/health.controller";
 import { authController } from "./controllers/auth.controller";
+import { projectController } from "./controllers/project.controller";
 import { errorHandler, notFoundHandler } from "./middlewares/error-handler";
 import type { AppEnv } from "./types/app-env";
 
@@ -30,6 +31,7 @@ app.use(
 // Register routes
 app.route("/api/v1/health", healthController);
 app.route("/api/v1/auth", authController);
+app.route("/api/v1/projects", projectController);
 
 // Error handling
 app.onError(errorHandler);

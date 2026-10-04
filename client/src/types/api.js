@@ -1,1 +1,8 @@
-export { createProjectSchema, loginSchema, projectListQuerySchema, updateProjectSchema, } from "@shared/dto";
+export {
+	createProjectSchema,
+	loginSchema,
+	PROJECT_CATEGORIES,
+	projectListQuerySchema,
+	publicProjectListQuerySchema,
+	updateProjectSchema,
+} from "@shared/dto";

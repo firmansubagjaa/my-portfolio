@@ -63,6 +63,16 @@ export const projectListQuerySchema = z.object({
 	status: projectStatusSchema.optional(),
 });
 
+export const publicProjectListQuerySchema = projectListQuerySchema
+	.extend({
+		status: z.enum(["published", "archived"]).default("published"),
+		limit: z.coerce.number().int().min(1).max(50).default(6),
+	})
+	.refine((data) => data.limit <= 50, {
+		message: "Limit maksimal 50",
+		path: ["limit"],
+	});
+
 export const loginSchema = z.object({
 	username: z
 		.string()
@@ -80,6 +90,9 @@ export type CreateProjectOutput = z.output<typeof createProjectSchema>;
 export type UpdateProjectInput = z.input<typeof updateProjectSchema>;
 export type UpdateProjectOutput = z.output<typeof updateProjectSchema>;
 export type ProjectListQuery = z.infer<typeof projectListQuerySchema>;
+export type PublicProjectListQuery = z.infer<
+	typeof publicProjectListQuerySchema
+>;
 export type LoginInput = z.infer<typeof loginSchema>;
 
 export interface ProjectDTO {
@@ -99,6 +112,13 @@ export interface ProjectDTO {
 	status: ProjectStatus;
 	created_at: string;
 	updated_at: string;
+}
+
+export type ProjectListItemDTO = Omit<ProjectDTO, "content">;
+
+export interface ProjectListResponse<T = ProjectListItemDTO> {
+	items: T[];
+	pagination: PaginationMeta;
 }
 
 export interface PaginationMeta {

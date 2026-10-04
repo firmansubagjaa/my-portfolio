@@ -26,7 +26,7 @@ export const errorHandler: ErrorHandler<AppEnv> = (err, c) => {
 		else if (status >= 400 && status < 500) category = "BAD_REQUEST";
 
 		// biome-ignore lint/suspicious/noExplicitAny: Cast required to access error properties
-	const appError = new AppError(status as any, category, err.message);
+		const appError = new AppError(status as any, category, err.message);
 		return ApiResponse.error(c, appError);
 	}
 
@@ -39,7 +39,7 @@ export const errorHandler: ErrorHandler<AppEnv> = (err, c) => {
 	// Handle PostgreSQL unique constraint violation
 	if (typeof err === "object" && err !== null && "code" in err) {
 		// biome-ignore lint/suspicious/noExplicitAny: Error typing from Postgres driver is loose
-	const error = err as any;
+		const error = err as any;
 		if (error.code === "23505") {
 			const conflictError = new ConflictError(
 				"Data dengan nilai unik tersebut sudah ada",
@@ -54,7 +54,7 @@ export const errorHandler: ErrorHandler<AppEnv> = (err, c) => {
 			"code" in error.cause
 		) {
 			// biome-ignore lint/suspicious/noExplicitAny: Cause may have loose typing
-		const cause = error.cause as any;
+			const cause = error.cause as any;
 			if (cause.code === "23505") {
 				const conflictError = new ConflictError(
 					"Data dengan nilai unik tersebut sudah ada",
