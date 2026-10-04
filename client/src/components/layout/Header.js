@@ -1,5 +1,40 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { Link, NavLink } from "react-router";
 export function Header() {
-    return (_jsx("header", { className: "bg-[--color-surface] border-b border-[--color-border]", children: _jsxs("nav", { className: "max-w-6xl mx-auto px-4 py-4 flex items-center justify-between", "aria-label": "Navigasi utama", children: [_jsx(Link, { to: "/", className: "font-bold text-lg hover:text-[--color-accent]", children: "Portfolio" }), _jsxs("div", { className: "flex gap-6", children: [_jsx(NavLink, { to: "/", className: ({ isActive }) => `hover:text-[--color-accent] transition-colors ${isActive ? "text-[--color-fg]" : "text-[--color-muted]"}`, children: ({ isActive }) => (_jsx("span", { "aria-current": isActive ? "page" : undefined, children: "Beranda" })) }), _jsx(NavLink, { to: "/projects", className: ({ isActive }) => `hover:text-[--color-accent] transition-colors ${isActive ? "text-[--color-fg]" : "text-[--color-muted]"}`, children: ({ isActive }) => (_jsx("span", { "aria-current": isActive ? "page" : undefined, children: "Proyek" })) })] })] }) }));
+	return _jsx("header", {
+		className: "bg-[--color-surface] border-b border-[--color-border]",
+		children: _jsxs("nav", {
+			className: "max-w-6xl mx-auto px-4 py-4 flex items-center justify-between",
+			"aria-label": "Navigasi utama",
+			children: [
+				_jsx(Link, {
+					to: "/",
+					className: "font-bold text-lg hover:text-[--color-accent]",
+					children: "Portfolio",
+				}),
+				_jsxs("div", {
+					className: "flex gap-6",
+					children: [
+						_jsx(NavLink, {
+							to: "/",
+							className: ({ isActive }) =>
+								`hover:text-[--color-accent] transition-colors ${isActive ? "text-[--color-fg]" : "text-[--color-muted]"}`,
+							children: ({ isActive }) =>
+								_jsx("span", {
+									"aria-current": isActive ? "page" : undefined,
+									children: "Beranda",
+								}),
+						}),
+						_jsx(NavLink, {
+							to: "/projects",
+							className: ({ isActive }) =>
+								`hover:text-[--color-accent] transition-colors ${isActive ? "text-[--color-fg]" : "text-[--color-muted]"}`,
+							children: ({ isActive }) =>
+								_jsx("span", { "aria-current": isActive ? "page" : undefined, children: "Proyek" }),
+						}),
+					],
+				}),
+			],
+		}),
+	});
 }

@@ -50,6 +50,15 @@ export const projectListQuerySchema = z.object({
     search: z.string().trim().max(100).optional(),
     status: projectStatusSchema.optional(),
 });
+export const publicProjectListQuerySchema = projectListQuerySchema
+    .extend({
+    status: z.enum(["published", "archived"]).default("published"),
+    limit: z.coerce.number().int().min(1).max(50).default(6),
+})
+    .refine((data) => data.limit <= 50, {
+    message: "Limit maksimal 50",
+    path: ["limit"],
+});
 export const loginSchema = z.object({
     username: z
         .string()

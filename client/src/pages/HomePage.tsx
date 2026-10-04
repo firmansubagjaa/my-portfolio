@@ -1,6 +1,13 @@
 import { Link } from "react-router";
+import { BentoGrid } from "@/components/bento/BentoGrid";
+import { BentoSkeleton } from "@/components/bento/BentoSkeleton";
+import { ProjectCard } from "@/components/bento/ProjectCard";
+import { useProjects } from "@/hooks/queries/use-projects";
 
 export default function HomePage() {
+	const { data, isLoading } = useProjects({ limit: 6, page: 1 });
+	const projects = data?.items || [];
+
 	return (
 		<div className="max-w-6xl mx-auto px-4 py-16">
 			<h1 className="text-4xl font-bold text-[--color-fg] mb-6">Selamat Datang</h1>
@@ -13,8 +20,23 @@ export default function HomePage() {
 				to="/projects"
 				className="inline-block bg-[--color-accent] text-[--color-bg] px-6 py-3 rounded hover:bg-[--color-accent]/90 transition-colors"
 			>
-				Lihat Proyek
+				Lihat Semua Proyek
 			</Link>
+
+			{/* Featured Projects */}
+			<div className="mt-16">
+				<h2 className="text-2xl font-bold text-[--color-fg] mb-6">Proyek Unggulan</h2>
+
+				{isLoading ? (
+					<BentoSkeleton />
+				) : (
+					<BentoGrid projects={projects}>
+						{projects.map((project) => (
+							<ProjectCard key={project.id} project={project} />
+						))}
+					</BentoGrid>
+				)}
+			</div>
 		</div>
 	);
 }
