@@ -1,0 +1,43 @@
+@import "@fontsource/lexend/400.css";
+@import "@fontsource/lexend/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+	--color-bg: #0c0a09;
+	--color-surface: #1c1917;
+	--color-border: #292524;
+	--color-fg: #fafaf9;
+	--color-muted: #a8a29e;
+	--color-accent: #f59e0b;
+	--color-code: #fb923c;
+}
+
+@layer base {
+	html {
+		color-scheme: dark;
+	}
+
+	body {
+		@apply bg-[--color-bg] text-[--color-fg];
+		font-family: "Lexend", sans-serif;
+	}
+
+	code {
+		font-family: "JetBrains Mono", monospace;
+	}
+
+	::selection {
+		@apply bg-[--color-accent]/20 text-[--color-fg];
+	}
+
+	:focus-visible {
+		@apply outline outline-2 outline-[--color-accent];
+	}
+
+	.prose {
+		@apply text-[--color-fg];
+	}
+}
