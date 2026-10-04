@@ -1,7 +1,12 @@
 // File: /client/src/services/projects.service.ts
 
-import type { ProjectDTO, ProjectListResponse, PublicProjectListQuery } from "@shared/dto";
-import { apiGet } from "./api-client";
+import type {
+	ProjectDTO,
+	ProjectListItemDTO,
+	ProjectListResponse,
+	PublicProjectListQuery,
+} from "@shared/dto";
+import { apiFetchEnvelope, apiGet } from "./api-client";
 
 /**
  * Get public projects with optional filtering
@@ -24,7 +29,7 @@ export async function getPublicProjects(
 		searchParams.append("category", params.category);
 	}
 
-	if (params.search && params.search.trim()) {
+	if (params.search?.trim()) {
 		searchParams.append("search", params.search.trim());
 	}
 
@@ -36,7 +41,12 @@ export async function getPublicProjects(
 	const queryString = searchParams.toString();
 	const url = queryString ? `/api/v1/projects?${queryString}` : "/api/v1/projects";
 
-	return apiGet<ProjectListResponse>(url);
+	// Server returns { data: [...], pagination } at the envelope level
+	const res = await apiFetchEnvelope<ProjectListItemDTO[]>(url, { method: "GET" });
+	if (!res.pagination) {
+		throw new Error("Respons daftar proyek tidak menyertakan pagination");
+	}
+	return { items: res.data, pagination: res.pagination };
 }
 
 /**

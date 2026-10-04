@@ -9,9 +9,12 @@ export default defineConfig({
 		alias: {
 			"@": path.resolve(import.meta.dirname, "src"),
 			"@shared": path.resolve(import.meta.dirname, "../server/src/shared"),
+			// See src/lib/debug-shim.ts
+			debug: path.resolve(import.meta.dirname, "src/lib/debug-shim.ts"),
 		},
 		dedupe: ["zod", "react", "react-dom"],
-		extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json"],
+		// TS sources first so a stray compiled .js next to a .ts can never shadow it
+		extensions: [".tsx", ".ts", ".jsx", ".mjs", ".js", ".json"],
 	},
 	server: {
 		proxy: {
@@ -22,20 +25,9 @@ export default defineConfig({
 		},
 	},
 	build: {
-		rollupOptions: {
-			output: {
-				manualChunks: (id) => {
-					if (
-						id.includes("node_modules/@uiw") ||
-						id.includes("pages/admin/LoginPage") ||
-						id.includes("pages/admin/DashboardPage") ||
-						id.includes("pages/admin/ProjectEditorPage")
-					) {
-						return "admin";
-					}
-				},
-			},
-		},
-		minify: "esbuild",
+		// No manualChunks: route-level `lazy` imports in src/router give each admin page,
+		// the detail page (markdown) and Shiki their own chunks automatically.
+		target: "es2022",
+		sourcemap: false,
 	},
 });

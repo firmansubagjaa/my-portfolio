@@ -1,29 +1,33 @@
 // File: /client/src/components/motion/AnimatedOutlet.tsx
-"use client";
+import { AnimatePresence } from "motion/react";
+import * as m from "motion/react-m";
+import { useState } from "react";
+import { useLocation, useOutlet } from "react-router";
 
-import { AnimatePresence, motion } from "motion/react";
-import { Outlet, useLocation } from "react-router";
+// Freezes the outlet so the old page keeps rendering during its exit animation
+function FrozenOutlet() {
+	const outlet = useOutlet();
+	const [frozen] = useState(outlet);
+	return frozen;
+}
 
 /**
- * Outlet wrapper with route transition animations
- * Animates opacity and Y position when changing routes
- * Key is based on pathname only (not query string) so filter changes don't trigger route animation
+ * Route transition keyed by pathname only, so query-string changes
+ * (filters, pagination) don't trigger a full-page animation.
  */
 export function AnimatedOutlet() {
 	const location = useLocation();
-	const key = location.pathname; // Key by pathname only, not query string
 
 	return (
-		<AnimatePresence mode="wait">
-			<motion.div
-				key={key}
-				initial={{ opacity: 0, y: 10 }}
+		<AnimatePresence mode="wait" initial={false}>
+			<m.div
+				key={location.pathname}
+				initial={{ opacity: 0, y: 4 }}
 				animate={{ opacity: 1, y: 0 }}
-				exit={{ opacity: 0, y: -10 }}
-				transition={{ duration: 0.2 }}
+				exit={{ opacity: 0, y: -4 }}
 			>
-				<Outlet />
-			</motion.div>
+				<FrozenOutlet />
+			</m.div>
 		</AnimatePresence>
 	);
 }

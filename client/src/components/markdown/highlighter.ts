@@ -1,34 +1,38 @@
 // File: /client/src/components/markdown/highlighter.ts
-import { createHighlighterCore } from "shiki";
+import type { HighlighterCore } from "shiki/core";
 
-// Supported languages for syntax highlighting
-const SUPPORTED_LANGUAGES = [
-	"ts",
-	"tsx",
-	"js",
-	"json",
-	"bash",
-	"sql",
-	"python",
-	"css",
-	"html",
-] as const;
-
-let highlighterInstance: Awaited<ReturnType<typeof createHighlighterCore>> | null = null;
+// Cache the Promise so concurrent CodeBlocks share one highlighter instance
+let highlighterPromise: Promise<HighlighterCore> | null = null;
 
 /**
- * Get or create a Shiki highlighter instance
- * Lazy-loaded only when needed (on detail pages)
+ * Lazy singleton Shiki highlighter. Everything (core, engine, themes, langs)
+ * is dynamically imported so Shiki stays out of the entry bundle.
+ * Static string specifiers let Vite analyze and code-split each import.
  */
-export async function getHighlighter() {
-	if (highlighterInstance) {
-		return highlighterInstance;
+export function getHighlighter(): Promise<HighlighterCore> {
+	if (!highlighterPromise) {
+		highlighterPromise = (async () => {
+			const [{ createHighlighterCore }, { createJavaScriptRegexEngine }] = await Promise.all([
+				import("shiki/core"),
+				import("shiki/engine/javascript"),
+			]);
+
+			return createHighlighterCore({
+				engine: createJavaScriptRegexEngine(),
+				themes: [import("shiki/themes/vitesse-dark.mjs")],
+				langs: [
+					import("shiki/langs/typescript.mjs"),
+					import("shiki/langs/tsx.mjs"),
+					import("shiki/langs/javascript.mjs"),
+					import("shiki/langs/json.mjs"),
+					import("shiki/langs/bash.mjs"),
+					import("shiki/langs/sql.mjs"),
+					import("shiki/langs/python.mjs"),
+					import("shiki/langs/css.mjs"),
+					import("shiki/langs/html.mjs"),
+				],
+			});
+		})();
 	}
-
-	highlighterInstance = await createHighlighterCore({
-		themes: [import("shiki/themes/dark-plus.mjs")],
-		langs: SUPPORTED_LANGUAGES.map((lang) => import(`shiki/langs/${lang}.mjs`)) as any,
-	});
-
-	return highlighterInstance;
+	return highlighterPromise;
 }

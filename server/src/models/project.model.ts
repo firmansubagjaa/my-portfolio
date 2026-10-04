@@ -1,5 +1,5 @@
 // File: /server/src/models/project.model.ts
-import { and, eq, inArray, ilike, or, count, desc } from "drizzle-orm";
+import { and, eq, inArray, ilike, or, count, desc, sql } from "drizzle-orm";
 import { db } from "../db";
 import { projects } from "../db/schema";
 import { escapeLike } from "../utils/sql";
@@ -46,6 +46,8 @@ export function buildProjectWhere(filters: Partial<PublicProjectListQuery>) {
 			or(
 				ilike(projects.title, searchPattern),
 				ilike(projects.summary, searchPattern),
+				// Parameterized: pattern is bound, not interpolated into SQL text
+				sql`array_to_string(${projects.tech_stack}, ' ') ILIKE ${searchPattern}`,
 			),
 		);
 	}

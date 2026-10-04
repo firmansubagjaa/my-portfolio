@@ -1,27 +1,30 @@
 import { ErrorBoundary } from "react-error-boundary";
-import { useLocation } from "react-router";
+import { ScrollRestoration, useLocation } from "react-router";
 import { AnimatedOutlet } from "@/components/motion/AnimatedOutlet";
-import { MotionProvider } from "@/components/motion/MotionProvider";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { RouteErrorFallback } from "./RouteErrorFallback";
 import { SkipLink } from "./SkipLink";
 
+// MotionProvider is mounted once at the app root (main.tsx), not here.
 export function RootLayout() {
 	const location = useLocation();
 
 	return (
-		<MotionProvider>
-			<div className="flex flex-col min-h-screen bg-[--color-bg]">
-				<SkipLink />
-				<Header />
-				<ErrorBoundary FallbackComponent={RouteErrorFallback} resetKeys={[location.pathname]}>
-					<main id="main" className="flex-1">
-						<AnimatedOutlet />
-					</main>
-				</ErrorBoundary>
-				<Footer />
-			</div>
-		</MotionProvider>
+		<div className="flex min-h-screen flex-col bg-bg text-fg">
+			<SkipLink />
+			<Header />
+			<ErrorBoundary FallbackComponent={RouteErrorFallback} resetKeys={[location.pathname]}>
+				<main
+					id="main"
+					tabIndex={-1}
+					className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 md:px-6"
+				>
+					<AnimatedOutlet />
+				</main>
+			</ErrorBoundary>
+			<Footer />
+			<ScrollRestoration />
+		</div>
 	);
 }

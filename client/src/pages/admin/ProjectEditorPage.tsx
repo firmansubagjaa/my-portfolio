@@ -42,40 +42,40 @@ export default function ProjectEditorPage() {
 
 	return (
 		<div className="max-w-4xl mx-auto px-4 py-16">
-			<h1 className="text-4xl font-bold text-[--color-fg] mb-8">Edit Proyek</h1>
+			<h1 className="text-4xl font-bold text-fg mb-8">Edit Proyek</h1>
 
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 				<div>
-					<label htmlFor="title" className="block text-sm font-medium text-[--color-fg] mb-1">
+					<label htmlFor="title" className="block text-sm font-medium text-fg mb-1">
 						Judul
 					</label>
 					<input
 						{...register("title")}
 						type="text"
-						className="w-full px-4 py-2 bg-[--color-bg] border border-[--color-border] rounded text-[--color-fg] focus:outline-none focus:border-[--color-accent]"
+						className="w-full px-4 py-2 bg-bg border border-border rounded text-fg focus:outline-none focus:border-accent"
 					/>
 					{errors.title && <p className="text-red-400 text-sm mt-1">{errors.title.message}</p>}
 				</div>
 
 				<div>
-					<label htmlFor="slug" className="block text-sm font-medium text-[--color-fg] mb-1">
+					<label htmlFor="slug" className="block text-sm font-medium text-fg mb-1">
 						Slug
 					</label>
 					<input
 						{...register("slug")}
 						type="text"
-						className="w-full px-4 py-2 bg-[--color-bg] border border-[--color-border] rounded text-[--color-fg] focus:outline-none focus:border-[--color-accent]"
+						className="w-full px-4 py-2 bg-bg border border-border rounded text-fg focus:outline-none focus:border-accent"
 					/>
 					{errors.slug && <p className="text-red-400 text-sm mt-1">{errors.slug.message}</p>}
 				</div>
 
 				<div>
-					<label htmlFor="summary" className="block text-sm font-medium text-[--color-fg] mb-1">
+					<label htmlFor="summary" className="block text-sm font-medium text-fg mb-1">
 						Summary
 					</label>
 					<textarea
 						{...register("summary")}
-						className="w-full px-4 py-2 bg-[--color-bg] border border-[--color-border] rounded text-[--color-fg] focus:outline-none focus:border-[--color-accent]"
+						className="w-full px-4 py-2 bg-bg border border-border rounded text-fg focus:outline-none focus:border-accent"
 						rows={3}
 					/>
 					{errors.summary && <p className="text-red-400 text-sm mt-1">{errors.summary.message}</p>}

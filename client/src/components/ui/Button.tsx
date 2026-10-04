@@ -19,11 +19,9 @@ export function Button({
 	const baseStyles = "inline-flex items-center justify-center font-medium transition-colors";
 
 	const variantStyles = {
-		primary:
-			"bg-[--color-accent] text-[--color-bg] hover:bg-[--color-accent]/90 disabled:opacity-50",
-		secondary:
-			"bg-[--color-surface] border border-[--color-border] text-[--color-fg] hover:bg-[--color-surface]/80 disabled:opacity-50",
-		ghost: "text-[--color-fg] hover:bg-[--color-surface]/50 disabled:opacity-50",
+		primary: "bg-accent text-bg hover:bg-accent/90 disabled:opacity-50",
+		secondary: "bg-surface border border-border text-fg hover:bg-surface/80 disabled:opacity-50",
+		ghost: "text-fg hover:bg-surface/50 disabled:opacity-50",
 	};
 
 	const sizeStyles = {

@@ -1,52 +1,38 @@
 // File: /client/src/components/bento/BentoGrid.tsx
-"use client";
-
 import { AnimatePresence, LayoutGroup } from "motion/react";
-import type { ReactNode } from "react";
+import * as m from "motion/react-m";
 import type { ProjectListItemDTO } from "@/types/api";
+import { BENTO_GRID_CLASS, bentoCellClass } from "./bento-layout";
+import { ProjectCard } from "./ProjectCard";
 
 interface BentoGridProps {
-	children: ReactNode[];
-	projects?: ProjectListItemDTO[];
+	projects: ProjectListItemDTO[];
+	/** Give the first card eager loading + high fetch priority (LCP) */
+	prioritizeFirst?: boolean;
 }
 
-/**
- * Bento grid layout with featured projects support
- * - Featured projects (first 2): col-span-4 row-span-2
- * - Other featured projects: col-span-3
- * - Regular projects: col-span-2
- * - Responsive: 1 column on mobile, 6 columns on desktop, 12 on large screens
- */
-export function BentoGrid({ children, projects = [] }: BentoGridProps) {
+export function BentoGrid({ projects, prioritizeFirst = false }: BentoGridProps) {
+	const firstFeaturedId = projects.find((p) => p.is_featured)?.id;
+
 	return (
 		<LayoutGroup>
-			<AnimatePresence mode="popLayout">
-				<div className="grid grid-cols-1 gap-6 md:grid-cols-6 lg:grid-cols-12 auto-rows-[300px]">
-					{children &&
-						children.map((child, index) => {
-							const project = projects[index];
-							let colSpan = "md:col-span-2 lg:col-span-2";
-							let rowSpan = "md:row-span-1 lg:row-span-1";
-
-							// Featured projects (first 2) take up 4x2 on desktop
-							if (project?.is_featured && index < 2) {
-								colSpan = "md:col-span-3 lg:col-span-4";
-								rowSpan = "md:row-span-2 lg:row-span-2";
-							}
-							// Other featured projects take 3x1
-							else if (project?.is_featured) {
-								colSpan = "md:col-span-3 lg:col-span-3";
-								rowSpan = "md:row-span-1 lg:row-span-1";
-							}
-
-							return (
-								<div key={project?.id || index} className={`${colSpan} ${rowSpan} col-span-1`}>
-									{child}
-								</div>
-							);
-						})}
-				</div>
-			</AnimatePresence>
+			{/* biome-ignore lint/a11y/noRedundantRoles: role restores list semantics removed by list-style:none in Safari */}
+			<ul role="list" className={BENTO_GRID_CLASS}>
+				<AnimatePresence mode="popLayout" initial={false}>
+					{projects.map((project, index) => (
+						<m.li
+							layout
+							key={project.id}
+							initial={{ opacity: 0, scale: 0.98 }}
+							animate={{ opacity: 1, scale: 1 }}
+							exit={{ opacity: 0, scale: 0.98 }}
+							className={bentoCellClass(project.is_featured, project.id === firstFeaturedId)}
+						>
+							<ProjectCard project={project} priority={prioritizeFirst && index === 0} />
+						</m.li>
+					))}
+				</AnimatePresence>
+			</ul>
 		</LayoutGroup>
 	);
 }
