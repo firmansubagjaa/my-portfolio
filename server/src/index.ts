@@ -4,6 +4,8 @@
 import { Hono } from "hono";
 import { secureHeaders } from "hono/secure-headers";
 import { cors } from "hono/cors";
+import { HTTPException } from "hono/http-exception";
+import { timeout } from "hono/timeout";
 import { env } from "./config/env";
 import { healthController } from "./controllers/health.controller";
 import { authController } from "./controllers/auth.controller";
@@ -31,6 +33,16 @@ app.use(
 	}),
 );
 
+// Fail hung requests (e.g. a stuck DB call) with a JSON 504 from the error
+// handler instead of a dropped socket. Must stay below idleTimeout below.
+app.use(
+	"/api/*",
+	timeout(
+		20_000,
+		() => new HTTPException(504, { message: "Server terlalu lama merespons" }),
+	),
+);
+
 // Register routes
 app.route("/api/v1/health", healthController);
 app.route("/api/v1/auth", authController);
@@ -48,4 +60,8 @@ app.route("/api/v1/upload", uploadController);
 app.onError(errorHandler);
 app.notFound(notFoundHandler);
 
-export default app;
+// Bun reads serve options from the default export. Its default idleTimeout (10s)
+// cut slow-but-legitimate requests when the DB pooler was slow, so raise it above
+// the request timeout (20s) so the JSON 504 is always sent first. The Hono
+// instance itself stays the default export so Vercel's Hono detection still works.
+export default Object.assign(app, { idleTimeout: 30 });
