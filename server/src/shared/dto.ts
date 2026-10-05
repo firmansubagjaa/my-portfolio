@@ -73,6 +73,15 @@ export const publicProjectListQuerySchema = projectListQuerySchema
 		path: ["limit"],
 	});
 
+export const adminProjectListQuerySchema = projectListQuerySchema.extend({
+	// Admin can filter by single or multiple statuses (unlike public which defaults to "published")
+	status: z
+		.union([projectStatusSchema, z.array(projectStatusSchema)])
+		.optional(),
+	// Default limit changed from 6 (public) to 10 (admin)
+	limit: z.coerce.number().int().min(1).max(50).default(10),
+});
+
 export const loginSchema = z.object({
 	username: z
 		.string()
@@ -93,7 +102,16 @@ export type ProjectListQuery = z.infer<typeof projectListQuerySchema>;
 export type PublicProjectListQuery = z.infer<
 	typeof publicProjectListQuerySchema
 >;
+export type AdminProjectListQuery = z.infer<typeof adminProjectListQuerySchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+
+// Upload constants and types
+export const UPLOAD_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+export const UPLOAD_ALLOWED_TYPES = ["png", "jpg", "gif", "webp"] as const;
+
+export interface UploadResultDTO {
+	url: string;
+}
 
 export interface ProjectDTO {
 	id: string;

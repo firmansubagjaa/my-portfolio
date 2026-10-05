@@ -1,95 +1,83 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { Button } from "@/components/ui/Button";
-import { Skeleton } from "@/components/ui/Skeleton";
-import { apiGet, apiPut } from "@/services/api-client";
-import type { ProjectDTO, UpdateProjectInput } from "@/types/api";
-import { updateProjectSchema } from "@/types/api";
+import { Spinner } from "@/components/ui/Spinner";
+import { ProjectForm } from "@/components/form/ProjectForm";
+import {
+	useAdminProject,
+	useCreateProject,
+	useUpdateProject,
+} from "@/hooks/queries/use-admin-projects";
+import type { ProjectDTO } from "@/types/api";
 
 export default function ProjectEditorPage() {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
+	const [error, setError] = useState<string | null>(null);
 
-	const { data: project, isLoading: projectLoading } = useQuery({
-		queryKey: ["project", id],
-		queryFn: () => apiGet<ProjectDTO>(`/api/v1/admin/projects/${id}`),
-		enabled: !!id,
-	});
+	const isEditMode = !!id;
 
-	const { mutate: updateProject, isPending } = useMutation({
-		mutationFn: (data: UpdateProjectInput) => apiPut(`/api/v1/admin/projects/${id}`, data),
-		onSuccess: () => navigate("/admin"),
-	});
+	// Fetch project if editing
+	const { data: project, isLoading: projectLoading } = useAdminProject(id || "");
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<UpdateProjectInput>({
-		resolver: zodResolver(updateProjectSchema),
-		values: project || {},
-	});
+	// Mutations
+	const { mutate: createProject, isPending: isCreating } = useCreateProject();
+	const { mutateAsync: updateProject, isPending: isUpdating } = useUpdateProject();
 
-	const onSubmit = (data: UpdateProjectInput) => {
-		updateProject(data);
+	const handleSubmit = async (data: any) => {
+		setError(null);
+
+		if (isEditMode) {
+			try {
+				await updateProject({ id: id!, data });
+				navigate("/admin");
+			} catch (err: any) {
+				if (err.status === 409) {
+					throw err; // Let ProjectForm handle this
+				}
+				setError(err.message || "Gagal memperbarui proyek");
+				throw err;
+			}
+		} else {
+			return new Promise<void>((resolve, reject) => {
+				createProject(data, {
+					onSuccess: () => {
+						navigate("/admin");
+						resolve();
+					},
+					onError: (err: any) => {
+						if (err.status === 409) {
+							reject(err); // Let ProjectForm handle this
+						} else {
+							setError(err.message || "Gagal membuat proyek");
+							reject(err);
+						}
+					},
+				});
+			});
+		}
 	};
 
 	if (projectLoading) {
-		return <Skeleton className="h-96" />;
+		return (
+			<div className="flex items-center justify-center min-h-screen">
+				<Spinner label="Memuat proyek" />
+			</div>
+		);
 	}
 
 	return (
-		<div className="max-w-4xl mx-auto px-4 py-16">
-			<h1 className="text-4xl font-bold text-fg mb-8">Edit Proyek</h1>
+		<div className="max-w-4xl mx-auto px-4 py-8">
+			<h1 className="text-3xl font-bold text-neutral-900 mb-8">
+				{isEditMode ? "Edit Proyek" : "Buat Proyek Baru"}
+			</h1>
 
-			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-				<div>
-					<label htmlFor="title" className="block text-sm font-medium text-fg mb-1">
-						Judul
-					</label>
-					<input
-						{...register("title")}
-						type="text"
-						className="w-full px-4 py-2 bg-bg border border-border rounded text-fg focus:outline-none focus:border-accent"
-					/>
-					{errors.title && <p className="text-red-400 text-sm mt-1">{errors.title.message}</p>}
-				</div>
-
-				<div>
-					<label htmlFor="slug" className="block text-sm font-medium text-fg mb-1">
-						Slug
-					</label>
-					<input
-						{...register("slug")}
-						type="text"
-						className="w-full px-4 py-2 bg-bg border border-border rounded text-fg focus:outline-none focus:border-accent"
-					/>
-					{errors.slug && <p className="text-red-400 text-sm mt-1">{errors.slug.message}</p>}
-				</div>
-
-				<div>
-					<label htmlFor="summary" className="block text-sm font-medium text-fg mb-1">
-						Summary
-					</label>
-					<textarea
-						{...register("summary")}
-						className="w-full px-4 py-2 bg-bg border border-border rounded text-fg focus:outline-none focus:border-accent"
-						rows={3}
-					/>
-					{errors.summary && <p className="text-red-400 text-sm mt-1">{errors.summary.message}</p>}
-				</div>
-
-				<div className="flex gap-4">
-					<Button type="submit" variant="primary" isLoading={isPending}>
-						Simpan
-					</Button>
-					<Button type="button" variant="secondary" onClick={() => navigate("/admin")}>
-						Batal
-					</Button>
-				</div>
-			</form>
+			<ProjectForm
+				project={project as ProjectDTO | undefined}
+				onSubmit={handleSubmit}
+				isLoading={isCreating || isUpdating}
+				error={error || undefined}
+				onCancel={() => navigate("/admin")}
+			/>
 		</div>
 	);
 }
