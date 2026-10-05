@@ -1,7 +1,7 @@
 // File: /client/src/services/upload.service.ts
 import { API_BASE } from "@/config/env";
 import type { ApiError } from "@/types/api";
-import { ApiClientError } from "./api-client";
+import { ApiClientError, parseJsonResponse } from "./api-client";
 
 /**
  * Upload a single image file.
@@ -18,18 +18,18 @@ export async function uploadImage(file: File): Promise<string> {
 		credentials: "include",
 	});
 
-	const data = (await response.json()) as
-		| { success: true; data: { url: string } }
-		| { success: false } & ApiError;
+	const data = await parseJsonResponse<
+		{ success: true; data: { url: string } } | ({ success: false } & ApiError)
+	>(response);
 
 	if (!response.ok) {
 		const error = data as unknown as ApiError;
-		throw new ApiClientError(response.status, error.category, error.errors);
+		throw new ApiClientError(response.status, error.category, error.message, error.errors);
 	}
 
 	if (data.success && data.data) {
 		return (data.data as { url: string }).url;
 	}
 
-	throw new Error("Upload failed");
+	throw new Error("Upload gagal");
 }

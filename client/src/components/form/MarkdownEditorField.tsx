@@ -2,8 +2,10 @@
 import MDEditor from "@uiw/react-md-editor";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
-import { Label } from "../ui/Label";
+import { useId } from "react";
+import { cn } from "@/lib/cn";
 import { FieldError } from "../ui/FieldError";
+import { Label } from "../ui/Label";
 
 interface MarkdownEditorFieldProps {
 	label?: string;
@@ -22,12 +24,26 @@ export function MarkdownEditorField({
 	required,
 	placeholder = "Tulis konten di sini...",
 }: MarkdownEditorFieldProps) {
+	const id = useId();
+	const errorId = `${id}-error`;
+	const hasError = !!error?.message;
+
 	return (
-		<div className="flex flex-col gap-2">
-			{label && <Label required={required}>{label}</Label>}
+		<div className="flex flex-col gap-1.5">
+			{label && (
+				<Label htmlFor={id} required={required}>
+					{label}
+				</Label>
+			)}
+			{/* data-color-mode selects the editor's dark palette; .admin-md-editor maps it to site tokens (globals.css) */}
 			<div
 				data-color-mode="dark"
-				className="border border-neutral-700 rounded-md overflow-hidden"
+				className={cn(
+					"admin-md-editor overflow-hidden rounded-md border transition-colors focus-within:ring-2",
+					hasError
+						? "border-red-500 focus-within:ring-red-500/30"
+						: "border-border focus-within:border-accent focus-within:ring-accent/30",
+				)}
 			>
 				<MDEditor
 					value={value}
@@ -35,16 +51,16 @@ export function MarkdownEditorField({
 					preview="live"
 					hideToolbar={false}
 					visibleDragbar={true}
-					height={300}
+					height={360}
 					textareaProps={{
+						id,
 						placeholder,
+						"aria-invalid": hasError || undefined,
+						"aria-describedby": hasError ? errorId : undefined,
 					}}
-					className={`bg-neutral-950 text-white ${
-						error ? "border border-red-500" : ""
-					}`}
 				/>
 			</div>
-			<FieldError error={error} />
+			<FieldError id={errorId} error={error} />
 		</div>
 	);
 }

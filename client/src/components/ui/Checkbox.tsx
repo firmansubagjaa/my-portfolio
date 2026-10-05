@@ -1,24 +1,44 @@
 // File: /client/src/components/ui/Checkbox.tsx
-import { forwardRef } from "react";
+import { forwardRef, useId } from "react";
+import { cn } from "@/lib/cn";
 
-interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {
 	label?: string;
+	description?: string;
 }
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-	({ label, className = "", ...props }, ref) => {
+	({ label, description, className, id: idProp, ...props }, ref) => {
+		const generatedId = useId();
+		const id = idProp ?? generatedId;
+		const descriptionId = `${id}-description`;
+
 		return (
-			<div className="flex items-center gap-2">
+			<div className="flex items-start gap-3">
 				<input
 					ref={ref}
+					id={id}
 					type="checkbox"
-					className={`w-4 h-4 border border-neutral-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer ${className}`}
+					aria-describedby={description ? descriptionId : undefined}
+					className={cn(
+						"mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-border bg-bg accent-accent",
+						className,
+					)}
 					{...props}
 				/>
-				{label && (
-					<label className="text-sm font-medium text-neutral-700 cursor-pointer">
-						{label}
-					</label>
+				{(label || description) && (
+					<div className="flex flex-col gap-0.5">
+						{label && (
+							<label htmlFor={id} className="cursor-pointer text-sm font-medium text-fg">
+								{label}
+							</label>
+						)}
+						{description && (
+							<p id={descriptionId} className="text-xs text-muted">
+								{description}
+							</p>
+						)}
+					</div>
 				)}
 			</div>
 		);

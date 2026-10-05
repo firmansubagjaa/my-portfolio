@@ -1,28 +1,48 @@
 // File: /client/src/components/ui/Textarea.tsx
-import { forwardRef } from "react";
-import { Label } from "./Label";
+import { forwardRef, useId } from "react";
+import { cn } from "@/lib/cn";
 import { FieldError } from "./FieldError";
+import { describedBy, fieldControlClasses } from "./field-styles";
+import { Label } from "./Label";
 
-interface TextareaProps
-	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
 	label?: string;
+	labelClassName?: string;
+	hint?: React.ReactNode;
 	error?: { message?: string };
 	required?: boolean;
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-	({ label, error, required, className = "", ...props }, ref) => {
+	({ label, labelClassName, hint, error, required, className, id: idProp, ...props }, ref) => {
+		const generatedId = useId();
+		const id = idProp ?? generatedId;
+		const hintId = `${id}-hint`;
+		const errorId = `${id}-error`;
+		const hasError = !!error?.message;
+
 		return (
-			<div className="flex flex-col gap-2">
-				{label && <Label required={required}>{label}</Label>}
+			<div className="flex flex-col gap-1.5">
+				{label && (
+					<Label htmlFor={id} required={required} className={labelClassName}>
+						{label}
+					</Label>
+				)}
 				<textarea
 					ref={ref}
-					className={`px-3 py-2 border border-neutral-300 rounded-md bg-white text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none ${
-						error ? "border-red-500" : ""
-					} ${className}`}
+					id={id}
+					aria-invalid={hasError || undefined}
+					aria-required={required || undefined}
+					aria-describedby={describedBy(hint !== undefined && hintId, hasError && errorId)}
+					className={fieldControlClasses(hasError, cn("min-h-24 resize-y", className))}
 					{...props}
 				/>
-				<FieldError error={error} />
+				{hint !== undefined && (
+					<p id={hintId} className="text-xs text-muted">
+						{hint}
+					</p>
+				)}
+				<FieldError id={errorId} error={error} />
 			</div>
 		);
 	},
