@@ -8,6 +8,9 @@ import { env } from "./config/env";
 import { healthController } from "./controllers/health.controller";
 import { authController } from "./controllers/auth.controller";
 import { projectController } from "./controllers/project.controller";
+import { adminController } from "./controllers/admin.controller";
+import { uploadController } from "./controllers/upload.controller";
+import { requireAuth } from "./middlewares/auth";
 import { errorHandler, notFoundHandler } from "./middlewares/error-handler";
 import type { AppEnv } from "./types/app-env";
 
@@ -32,6 +35,14 @@ app.use(
 app.route("/api/v1/health", healthController);
 app.route("/api/v1/auth", authController);
 app.route("/api/v1/projects", projectController);
+
+// Admin routes (protected) - HIGH-2: Correct middleware pattern
+app.use("/api/v1/admin*", requireAuth);
+app.route("/api/v1/admin", adminController);
+
+// Upload routes (protected) - HIGH-2: Correct middleware pattern
+app.use("/api/v1/upload*", requireAuth);
+app.route("/api/v1/upload", uploadController);
 
 // Error handling
 app.onError(errorHandler);

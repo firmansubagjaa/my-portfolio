@@ -13,13 +13,17 @@ export type {
 	ProjectListResponse,
 	PublicProjectListQuery,
 	UpdateProjectInput,
+	ProjectStatus,
+	AdminProjectListQuery,
 } from "@shared/dto";
 
 export {
 	createProjectSchema,
 	loginSchema,
 	PROJECT_CATEGORIES,
+	PROJECT_STATUSES,
 	projectListQuerySchema,
 	publicProjectListQuerySchema,
 	updateProjectSchema,
+	adminProjectListQuerySchema,
 } from "@shared/dto";
