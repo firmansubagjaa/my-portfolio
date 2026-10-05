@@ -1,15 +1,31 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
 import { useLogin } from "@/hooks/queries/use-auth";
+import { zodResolver } from "@/lib/zod-resolver";
+import { ApiClientError } from "@/services/api-client";
 import type { LoginInput } from "@/types/api";
 import { loginSchema } from "@/types/api";
 
+function getLoginErrorMessage(error: unknown): string {
+	if (error instanceof ApiClientError) {
+		if (error.status === 401) return "Username atau password salah.";
+		if (error.status === 429) return "Terlalu banyak percobaan login. Coba lagi dalam 15 menit.";
+		if (error.status === 400 || error.status === 422) {
+			return error.message || "Data login tidak valid.";
+		}
+	}
+	return "Tidak dapat terhubung ke server. Coba lagi nanti.";
+}
+
 export default function LoginPage() {
 	const navigate = useNavigate();
+	const location = useLocation();
 	const { mutate: login, isPending } = useLogin();
+	const [loginError, setLoginError] = useState<string | null>(null);
 	const {
 		register,
 		handleSubmit,
@@ -18,56 +34,69 @@ export default function LoginPage() {
 		resolver: zodResolver(loginSchema),
 	});
 
+	// ProtectedRoute passes the page the user tried to open
+	const redirectTo = (location.state as { from?: string } | null)?.from ?? "/admin";
+
 	const onSubmit = (data: LoginInput) => {
+		setLoginError(null);
 		login(data, {
-			onSuccess: () => navigate("/admin"),
-			onError: (error) => {
-				console.error("Login failed:", error);
-			},
+			onSuccess: () => navigate(redirectTo, { replace: true }),
+			onError: (error) => setLoginError(getLoginErrorMessage(error)),
 		});
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center px-4 bg-bg">
-			<Card className="w-full max-w-md">
-				<h1 className="text-2xl font-bold text-fg mb-6">Login Admin</h1>
+		<main id="main" className="flex min-h-screen items-center justify-center bg-bg px-4 py-12">
+			<div className="w-full max-w-md">
+				<p className="mb-3 text-center font-mono text-sm text-accent">Portfolio Admin</p>
+				<Card padding="lg">
+					<h1 className="text-2xl font-bold text-fg">Login Admin</h1>
+					<p className="mt-1 text-sm text-muted">Masuk untuk mengelola proyek.</p>
 
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-					<div>
-						<label htmlFor="username" className="block text-sm font-medium text-fg mb-1">
-							Username
-						</label>
-						<input
-							{...register("username")}
+					{loginError && (
+						<div
+							role="alert"
+							className="mt-6 rounded-md border border-red-800 bg-red-900/20 p-3 text-sm text-red-200"
+						>
+							{loginError}
+						</div>
+					)}
+
+					<form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-5" noValidate>
+						<Input
+							id="username"
+							label="Username"
 							type="text"
-							className="w-full px-4 py-2 bg-bg border border-border rounded text-fg focus:outline-none focus:border-accent"
+							autoComplete="username"
+							autoFocus
 							placeholder="username"
+							required
+							{...register("username")}
+							error={errors.username}
 						/>
-						{errors.username && (
-							<p className="text-red-400 text-sm mt-1">{errors.username.message}</p>
-						)}
-					</div>
 
-					<div>
-						<label htmlFor="password" className="block text-sm font-medium text-fg mb-1">
-							Password
-						</label>
-						<input
-							{...register("password")}
+						<Input
+							id="password"
+							label="Password"
 							type="password"
-							className="w-full px-4 py-2 bg-bg border border-border rounded text-fg focus:outline-none focus:border-accent"
-							placeholder="password"
+							autoComplete="current-password"
+							placeholder="••••••••"
+							required
+							{...register("password")}
+							error={errors.password}
 						/>
-						{errors.password && (
-							<p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
-						)}
-					</div>
 
-					<Button type="submit" variant="primary" className="w-full" isLoading={isPending}>
-						Login
-					</Button>
-				</form>
-			</Card>
-		</div>
+						<Button type="submit" variant="primary" className="w-full" isLoading={isPending}>
+							{isPending ? "Memproses…" : "Login"}
+						</Button>
+					</form>
+				</Card>
+				<p className="mt-6 text-center text-sm">
+					<Link to="/" className="text-muted transition-colors hover:text-fg">
+						← Kembali ke situs
+					</Link>
+				</p>
+			</div>
+		</main>
 	);
 }

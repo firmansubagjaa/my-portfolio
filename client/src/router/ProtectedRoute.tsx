@@ -10,8 +10,11 @@ export function ProtectedRoute() {
 
 	if (isPending) {
 		return (
-			<div className="flex min-h-screen items-center justify-center">
+			<div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-bg text-muted">
 				<Spinner label="Memeriksa sesi" />
+				<p aria-hidden="true" className="text-sm">
+					Memeriksa sesi…
+				</p>
 			</div>
 		);
 	}

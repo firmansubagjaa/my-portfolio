@@ -1,28 +1,47 @@
 // File: /client/src/components/ui/Input.tsx
-import { forwardRef } from "react";
-import { Label } from "./Label";
+import { forwardRef, useId } from "react";
 import { FieldError } from "./FieldError";
+import { describedBy, fieldControlClasses } from "./field-styles";
+import { Label } from "./Label";
 
-interface InputProps
-	extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	label?: string;
+	labelClassName?: string;
+	hint?: React.ReactNode;
 	error?: { message?: string };
 	required?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-	({ label, error, required, className = "", ...props }, ref) => {
+	({ label, labelClassName, hint, error, required, className, id: idProp, ...props }, ref) => {
+		const generatedId = useId();
+		const id = idProp ?? generatedId;
+		const hintId = `${id}-hint`;
+		const errorId = `${id}-error`;
+		const hasError = !!error?.message;
+
 		return (
-			<div className="flex flex-col gap-2">
-				{label && <Label required={required}>{label}</Label>}
+			<div className="flex flex-col gap-1.5">
+				{label && (
+					<Label htmlFor={id} required={required} className={labelClassName}>
+						{label}
+					</Label>
+				)}
 				<input
 					ref={ref}
-					className={`px-3 py-2 border border-neutral-300 rounded-md bg-white text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-						error ? "border-red-500" : ""
-					} ${className}`}
+					id={id}
+					aria-invalid={hasError || undefined}
+					aria-required={required || undefined}
+					aria-describedby={describedBy(hint !== undefined && hintId, hasError && errorId)}
+					className={fieldControlClasses(hasError, className)}
 					{...props}
 				/>
-				<FieldError error={error} />
+				{hint !== undefined && (
+					<p id={hintId} className="text-xs text-muted">
+						{hint}
+					</p>
+				)}
+				<FieldError id={errorId} error={error} />
 			</div>
 		);
 	},

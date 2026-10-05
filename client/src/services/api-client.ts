@@ -4,10 +4,22 @@ export class ApiClientError extends Error {
 	constructor(
 		public status: number,
 		public category: ApiErrorCategory,
+		message: string,
 		public errors?: Record<string, string[]>,
 	) {
-		super();
+		super(message);
 		this.name = "ApiClientError";
+	}
+}
+
+export const NETWORK_ERROR_MESSAGE = "Tidak dapat terhubung ke server";
+
+// Parses a JSON body; a non-JSON body (e.g. proxy error page while the API is down) becomes an ApiClientError
+export async function parseJsonResponse<T>(response: Response): Promise<T> {
+	try {
+		return (await response.json()) as T;
+	} catch {
+		throw new ApiClientError(response.status, "INTERNAL_ERROR", NETWORK_ERROR_MESSAGE);
 	}
 }
 
@@ -30,11 +42,11 @@ export async function apiFetchEnvelope<T>(
 		},
 	});
 
-	const data = (await response.json()) as ApiSuccess<T> | ApiError;
+	const data = await parseJsonResponse<ApiSuccess<T> | ApiError>(response);
 
 	if (!response.ok) {
 		const error = data as ApiError;
-		throw new ApiClientError(response.status, error.category, error.errors);
+		throw new ApiClientError(response.status, error.category, error.message, error.errors);
 	}
 
 	return data as ApiSuccess<T>;

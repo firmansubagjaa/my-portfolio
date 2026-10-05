@@ -1,12 +1,26 @@
 // File: /client/src/services/admin-projects.service.ts
-import { apiGet, apiPost, apiPut, apiDelete } from "./api-client";
-import type { ProjectDTO } from "@/types/api";
+import type {
+	CreateProjectInput,
+	ProjectCategory,
+	ProjectDTO,
+	ProjectListItemDTO,
+	ProjectListResponse,
+	ProjectStatus,
+	UpdateProjectInput,
+} from "@/types/api";
+import { apiDelete, apiFetchEnvelope, apiGet, apiPost, apiPut } from "./api-client";
+
+export interface AdminProjectFilters {
+	category?: ProjectCategory;
+	search?: string;
+	status?: ProjectStatus | ProjectStatus[];
+}
 
 export async function getAdminProjects(
 	page: number = 1,
 	limit: number = 10,
-	filters?: { category?: string; search?: string; status?: string | string[] },
-) {
+	filters?: AdminProjectFilters,
+): Promise<ProjectListResponse<ProjectListItemDTO>> {
 	const params = new URLSearchParams({
 		page: page.toString(),
 		limit: limit.toString(),
@@ -15,30 +29,37 @@ export async function getAdminProjects(
 	if (filters?.category) {
 		params.append("category", filters.category);
 	}
-	if (filters?.search) {
-		params.append("search", filters.search);
+	if (filters?.search?.trim()) {
+		params.append("search", filters.search.trim());
 	}
 	if (filters?.status) {
 		if (Array.isArray(filters.status)) {
-			filters.status.forEach((s) => params.append("status", s));
+			for (const s of filters.status) params.append("status", s);
 		} else {
 			params.append("status", filters.status);
 		}
 	}
 
-	return apiGet<ProjectDTO[]>(`/api/v1/admin?${params}`);
+	// Pagination lives on the envelope, so read the full envelope (apiGet only returns data)
+	const res = await apiFetchEnvelope<ProjectListItemDTO[]>(`/api/v1/admin?${params}`, {
+		method: "GET",
+	});
+	if (!res.pagination) {
+		throw new Error("Respons daftar proyek tidak menyertakan pagination");
+	}
+	return { items: res.data, pagination: res.pagination };
 }
 
 export async function getAdminProject(id: string): Promise<ProjectDTO> {
-	return apiGet(`/api/v1/admin/${id}`);
+	return apiGet<ProjectDTO>(`/api/v1/admin/${id}`);
 }
 
-export async function createProject(data: any): Promise<ProjectDTO> {
-	return apiPost(`/api/v1/admin`, data);
+export async function createProject(data: CreateProjectInput): Promise<ProjectDTO> {
+	return apiPost<ProjectDTO>(`/api/v1/admin`, data);
 }
 
-export async function updateProject(id: string, data: any): Promise<ProjectDTO> {
-	return apiPut(`/api/v1/admin/${id}`, data);
+export async function updateProject(id: string, data: UpdateProjectInput): Promise<ProjectDTO> {
+	return apiPut<ProjectDTO>(`/api/v1/admin/${id}`, data);
 }
 
 export async function deleteProject(id: string): Promise<void> {

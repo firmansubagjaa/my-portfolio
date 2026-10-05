@@ -1,9 +1,19 @@
 // File: /client/src/components/form/ImageUploadField.tsx
-import { useRef } from "react";
+import { useId, useRef, useState } from "react";
 import { useUploadImage } from "@/hooks/queries/use-upload";
-import { Spinner } from "../ui/Spinner";
-import { Label } from "../ui/Label";
+import { cn } from "@/lib/cn";
+import { Button } from "../ui/Button";
 import { FieldError } from "../ui/FieldError";
+import { describedBy } from "../ui/field-styles";
+import { Label } from "../ui/Label";
+import { Spinner } from "../ui/Spinner";
+import {
+	ALLOWED_TYPES,
+	dropZoneClasses,
+	FORMAT_HINT,
+	UploadIcon,
+	validateImage,
+} from "./upload-utils";
 
 interface ImageUploadFieldProps {
 	label?: string;
@@ -13,9 +23,6 @@ interface ImageUploadFieldProps {
 	required?: boolean;
 }
 
-const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"];
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-
 export function ImageUploadField({
 	label,
 	value,
@@ -23,113 +30,138 @@ export function ImageUploadField({
 	error,
 	required,
 }: ImageUploadFieldProps) {
+	const id = useId();
+	const labelId = `${id}-label`;
+	const instructionId = `${id}-instruction`;
+	const hintId = `${id}-hint`;
+	const errorId = `${id}-error`;
 	const inputRef = useRef<HTMLInputElement>(null);
+	const [isDragging, setIsDragging] = useState(false);
+	const [uploadError, setUploadError] = useState<string | null>(null);
 	const { mutate: uploadImage, isPending } = useUploadImage();
 
+	const shownError = uploadError ? { message: uploadError } : error;
+	const hasError = !!shownError?.message;
+
 	const handleFile = (file: File) => {
-		// Validate file type
-		if (!ALLOWED_TYPES.includes(file.type)) {
-			alert("Format file harus PNG, JPG, GIF, atau WebP");
+		const validationError = validateImage(file);
+		if (validationError) {
+			setUploadError(validationError);
 			return;
 		}
 
-		// Validate file size
-		if (file.size > MAX_FILE_SIZE) {
-			alert("Ukuran file maksimal 10MB");
-			return;
-		}
-
+		setUploadError(null);
 		uploadImage(file, {
-			onSuccess: (url) => {
-				onChange(url);
-			},
-			onError: (err) => {
-				alert(`Upload gagal: ${err.message}`);
-			},
+			onSuccess: (url) => onChange(url),
+			onError: (err) => setUploadError(`Upload gagal: ${err.message || "coba lagi"}`),
 		});
 	};
 
 	const handleDragOver = (e: React.DragEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
+		if (!isDragging) setIsDragging(true);
+	};
+
+	const handleDragLeave = (e: React.DragEvent) => {
+		e.preventDefault();
+		setIsDragging(false);
 	};
 
 	const handleDrop = (e: React.DragEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
-
-		const files = e.dataTransfer.files;
-		if (files.length > 0) {
-			handleFile(files[0]!);
-		}
+		setIsDragging(false);
+		const file = e.dataTransfer.files[0];
+		if (file && !isPending) handleFile(file);
 	};
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const files = e.currentTarget.files;
-		if (files && files.length > 0) {
-			handleFile(files[0]!);
-		}
+		const file = e.currentTarget.files?.[0];
+		if (file) handleFile(file);
+		// Allow picking the same file again after an error
+		e.currentTarget.value = "";
 	};
 
-	return (
-		<div className="flex flex-col gap-2">
-			{label && <Label required={required}>{label}</Label>}
+	const openPicker = () => inputRef.current?.click();
 
-			{value ? (
-				<div className="flex flex-col gap-2">
-					<img
-						src={value}
-						alt="Preview"
-						className="max-w-xs h-48 object-cover rounded-md"
-					/>
-					<button
-						type="button"
-						onClick={() => {
-							onChange("");
-							if (inputRef.current) inputRef.current.value = "";
-						}}
-						className="text-sm text-red-500 hover:text-red-600"
-					>
-						Hapus gambar
-					</button>
-				</div>
-			) : (
-				<div
-					onDragOver={handleDragOver}
-					onDrop={handleDrop}
-					onClick={() => inputRef.current?.click()}
-					className={`border-2 border-dashed rounded-md p-8 text-center cursor-pointer transition-colors ${
-						isPending
-							? "border-neutral-500 bg-neutral-800"
-							: "border-neutral-500 hover:border-neutral-400 hover:bg-neutral-900"
-					} ${error ? "border-red-500" : ""}`}
-				>
-					{isPending ? (
-						<div className="flex flex-col items-center gap-2">
-							<Spinner />
-							<p className="text-sm text-neutral-300">Mengupload...</p>
-						</div>
-					) : (
-						<div>
-							<p className="text-sm text-neutral-300 mb-2">
-								Drag & drop gambar di sini atau klik untuk memilih
-							</p>
-							<p className="text-xs text-neutral-500">
-								PNG, JPG, GIF, WebP • Max 10MB
-							</p>
-						</div>
-					)}
-					<input
-						ref={inputRef}
-						type="file"
-						accept="image/*"
-						onChange={handleInputChange}
-						className="hidden"
-					/>
-				</div>
+	return (
+		<div className="flex flex-col gap-1.5">
+			{label && (
+				<Label id={labelId} required={required}>
+					{label}
+				</Label>
 			)}
 
-			<FieldError error={error} />
+			{value ? (
+				<div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+					<img
+						src={value}
+						alt="Pratinjau thumbnail"
+						className="h-48 w-full max-w-sm rounded-md border border-border bg-bg object-cover"
+					/>
+					<div className="flex gap-2">
+						<Button variant="secondary" size="sm" onClick={openPicker} isLoading={isPending}>
+							Ganti gambar
+						</Button>
+						<button
+							type="button"
+							onClick={() => {
+								setUploadError(null);
+								onChange("");
+							}}
+							disabled={isPending}
+							className="cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium text-red-400 transition-colors hover:bg-red-900/20 hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-50"
+						>
+							Hapus gambar
+						</button>
+					</div>
+				</div>
+			) : (
+				<button
+					type="button"
+					onClick={openPicker}
+					onDragOver={handleDragOver}
+					onDragLeave={handleDragLeave}
+					onDrop={handleDrop}
+					disabled={isPending}
+					aria-labelledby={describedBy(label && labelId, instructionId)}
+					aria-describedby={describedBy(hintId, hasError && errorId)}
+					className={cn(dropZoneClasses(hasError, isDragging), "p-8")}
+				>
+					{isPending ? (
+						<span className="flex flex-col items-center gap-2">
+							<Spinner label="Mengupload gambar" />
+							<span id={instructionId} className="text-sm">
+								Mengupload…
+							</span>
+						</span>
+					) : (
+						<span className="flex flex-col items-center gap-2">
+							<UploadIcon />
+							<span id={instructionId} className="text-sm text-fg">
+								Drag & drop gambar di sini atau{" "}
+								<span className="text-accent">klik untuk memilih</span>
+							</span>
+							<span id={hintId} className="text-xs">
+								{FORMAT_HINT}
+							</span>
+						</span>
+					)}
+				</button>
+			)}
+
+			<input
+				ref={inputRef}
+				type="file"
+				accept={ALLOWED_TYPES.join(",")}
+				onChange={handleInputChange}
+				className="sr-only"
+				tabIndex={-1}
+				aria-hidden="true"
+			/>
+
+			<FieldError id={errorId} error={shownError} />
 		</div>
 	);
 }

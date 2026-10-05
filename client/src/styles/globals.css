@@ -21,7 +21,7 @@
 	}
 
 	body {
-		@apply bg-[--color-bg] text-[--color-fg];
+		@apply bg-bg text-fg;
 		font-family: "Lexend", sans-serif;
 	}
 
@@ -30,14 +30,42 @@
 	}
 
 	::selection {
-		@apply bg-[--color-accent]/20 text-[--color-fg];
+		@apply bg-accent/20 text-fg;
 	}
 
 	:focus-visible {
-		@apply outline outline-2 outline-[--color-accent];
+		@apply outline-2 outline-offset-2 outline-accent;
 	}
 
 	.prose {
-		@apply text-[--color-fg];
+		@apply text-fg;
 	}
+}
+
+/* Map @uiw/react-md-editor's dark (GitHub) palette onto the site tokens.
+   The [data-color-mode] part outranks the library's `[data-color-mode*='dark'] .wmde-markdown`,
+   whose CSS loads later (lazy editor chunk) and would otherwise win on source order. */
+.admin-md-editor[data-color-mode] .w-md-editor,
+.admin-md-editor[data-color-mode] .wmde-markdown-var,
+.admin-md-editor[data-color-mode] .wmde-markdown {
+	--color-canvas-default: var(--color-bg);
+	--color-canvas-subtle: var(--color-surface);
+	--color-border-default: var(--color-border);
+	--color-border-muted: var(--color-border);
+	--color-neutral-muted: rgb(168 162 158 / 0.2);
+	--color-fg-default: var(--color-fg);
+	--color-fg-muted: var(--color-muted);
+	--color-accent-fg: var(--color-accent);
+	--md-editor-background-color: var(--color-bg);
+	--md-editor-box-shadow-color: var(--color-border);
+}
+
+.admin-md-editor .w-md-editor {
+	box-shadow: none;
+	border-radius: 0;
+}
+
+.admin-md-editor .w-md-editor-toolbar {
+	background-color: var(--color-surface);
+	border-bottom-color: var(--color-border);
 }

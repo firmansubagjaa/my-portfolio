@@ -1,13 +1,19 @@
-import type { ProjectCategory } from "@shared/dto";
+import type { ProjectCategory, ProjectStatus } from "@shared/dto";
 
 export const API_BASE = "/api/v1";
 
 export const CATEGORY_LABELS: Record<ProjectCategory, string> = {
-	fullstack: "Full-Stack",
-	ai_ml: "AI / ML",
+	fullstack: "Fullstack",
+	ai_ml: "AI/ML",
 	frontend: "Frontend",
 	backend: "Backend",
 	experiment: "Experiment",
+};
+
+export const STATUS_LABELS: Record<ProjectStatus, string> = {
+	draft: "Draft",
+	published: "Published",
+	archived: "Archived",
 };
 
 export const PROJECTS_PER_PAGE = 6;
