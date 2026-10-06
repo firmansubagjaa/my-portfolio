@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { useScrollInView } from "@/hooks/useScrollInView";
-import { Mail, Code2, Share2, Radio } from "lucide-react";
+import { Code2, Share2 } from "lucide-react";
 
 interface ContactLink {
 	label: string;
@@ -11,28 +11,16 @@ interface ContactLink {
 
 const contactLinks: ContactLink[] = [
 	{
-		label: "Email",
-		href: "mailto:firman.subagja@outlook.com",
-		icon: <Mail size={24} />,
-		ariaLabel: "Send email to Firman Subagja",
-	},
-	{
 		label: "LinkedIn",
-		href: "https://linkedin.com/in/firmansubagja",
+		href: "https://www.linkedin.com/in/firmannnn/",
 		icon: <Share2 size={24} />,
 		ariaLabel: "Visit Firman Subagja on LinkedIn",
 	},
 	{
 		label: "GitHub",
-		href: "https://github.com/firmansubagja",
+		href: "https://github.com/firmansubagjaa",
 		icon: <Code2 size={24} />,
 		ariaLabel: "Visit Firman Subagja on GitHub",
-	},
-	{
-		label: "X",
-		href: "https://x.com/firmansubagja",
-		icon: <Radio size={24} />,
-		ariaLabel: "Follow Firman Subagja on X",
 	},
 ];
 

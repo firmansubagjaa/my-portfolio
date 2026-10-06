@@ -1,10 +1,9 @@
 import { motion } from "motion/react";
 import { useScrollInView } from "@/hooks/useScrollInView";
 import { getTechIcon, CATEGORY_ICONS } from "@/lib/techStackIcons";
-import type { ProjectCategory } from "@shared/dto";
 
 interface TechStackCategory {
-	id: ProjectCategory;
+	id: string; // Display category ID (not tied to ProjectCategory enum)
 	name: string;
 	techs: string[];
 }
@@ -26,7 +25,7 @@ const techStackCategories: TechStackCategory[] = [
 		techs: ["Python", "FastAPI", "Transformers", "Pandas", "PyTorch"],
 	},
 	{
-		id: "frontend", // Infrastructure uses cloud/layers icon
+		id: "infrastructure", // Infrastructure uses cloud/layers icon
 		name: "Infrastructure & Tools",
 		techs: ["Docker", "AWS", "Git", "GitHub Actions"],
 	},
@@ -94,6 +93,10 @@ export function TechStack() {
 				>
 					{techStackCategories.map((category) => {
 						const categoryIcon = CATEGORY_ICONS[category.id];
+						if (!categoryIcon) {
+							console.warn(`Icon metadata not found for category: ${category.id}`);
+							return null;
+						}
 						const CategoryIconComponent = categoryIcon.icon;
 
 						return (

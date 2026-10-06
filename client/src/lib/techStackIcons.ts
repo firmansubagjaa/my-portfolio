@@ -13,7 +13,6 @@ import {
 	Layers,
 	Lightbulb,
 } from "lucide-react";
-import type { ProjectCategory } from "@shared/dto";
 
 export interface IconMetadata {
 	icon: LucideIcon;
@@ -131,7 +130,7 @@ export const TECH_ICONS: Record<string, IconMetadata> = {
 };
 
 // Category to icon mappings
-export const CATEGORY_ICONS: Record<ProjectCategory, IconMetadata> = {
+export const CATEGORY_ICONS: Record<string, IconMetadata> = {
 	fullstack: {
 		icon: Layers,
 		color: "#3B82F6",
@@ -151,6 +150,11 @@ export const CATEGORY_ICONS: Record<ProjectCategory, IconMetadata> = {
 		icon: Code2,
 		color: "#3B82F6",
 		label: "Frontend",
+	},
+	infrastructure: {
+		icon: Cloud,
+		color: "#F97316",
+		label: "Infrastructure",
 	},
 	experiment: {
 		icon: Lightbulb,
@@ -182,6 +186,6 @@ export function getTechIcon(
 /**
  * Get icon metadata for a category
  */
-export function getCategoryIcon(category: ProjectCategory): IconMetadata {
-	return CATEGORY_ICONS[category] || CATEGORY_ICONS.experiment;
+export function getCategoryIcon(category: string): IconMetadata | undefined {
+	return CATEGORY_ICONS[category];
 }

@@ -8,7 +8,12 @@ interface CategoryBadgeProps {
 }
 
 export function CategoryBadge({ category, className }: CategoryBadgeProps) {
-	const { icon: IconComponent, color, label } = getCategoryIcon(category);
+	const categoryIcon = getCategoryIcon(category);
+	if (!categoryIcon) {
+		console.warn(`Icon metadata not found for category: ${category}`);
+		return null;
+	}
+	const { icon: IconComponent, color, label } = categoryIcon;
 
 	return (
 		<div
