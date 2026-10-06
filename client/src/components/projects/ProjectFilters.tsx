@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Star } from "lucide-react";
 import { CATEGORY_LABELS } from "@/config/constants";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import type { ProjectCategory, ProjectListItemDTO, PublicProjectListQuery } from "@/types/api";
@@ -76,14 +77,16 @@ export function ProjectFilters({ filters, onFiltersChange }: ProjectFiltersProps
 						<button
 							type="button"
 							aria-pressed={filters.featured === true}
+							aria-label="Filter unggulan"
 							onClick={handleFeaturedToggle}
-							className={`rounded-full px-4 py-2 font-medium transition-colors ${
+							className={`rounded-full px-4 py-2 font-medium transition-colors inline-flex items-center gap-2 ${
 								filters.featured === true
 									? "bg-accent text-bg"
 									: "border border-border text-fg hover:border-accent"
 							}`}
 						>
-							⭐ Unggulan
+							<Star size={16} className="fill-current" />
+							Unggulan
 						</button>
 					</div>
 				</fieldset>

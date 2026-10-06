@@ -13,6 +13,18 @@
 	--color-muted: #a8a29e;
 	--color-accent: #f59e0b;
 	--color-code: #fb923c;
+	
+	/* Spacing grid (8px base scale) */
+	--spacing-2: 0.5rem;
+	--spacing-3: 0.75rem;
+	--spacing-4: 1rem;
+	--spacing-6: 1.5rem;
+	--spacing-8: 2rem;
+	--spacing-10: 2.5rem;
+	--spacing-12: 3rem;
+	--spacing-16: 4rem;
+	--spacing-20: 5rem;
+	--spacing-24: 6rem;
 }
 
 @layer base {
@@ -79,3 +91,82 @@
 .shiki-wrapper code {
 	font-family: "JetBrains Mono", monospace;
 }
+
+/* Motion utilities with prefers-reduced-motion support */
+@media (prefers-reduced-motion: no-preference) {
+	@layer utilities {
+		/* Base hover transition: 200ms with expo-out easing */
+		.hover-transition {
+			transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
+			transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+			transition-duration: 200ms;
+		}
+
+		/* Card hover: amber border + shadow + scale 1.02 */
+		.card-hover {
+			transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
+			transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+			transition-duration: 200ms;
+			cursor: pointer;
+		}
+
+		.card-hover:hover {
+			border-color: var(--color-accent);
+			box-shadow: 0 10px 15px -3px rgb(245 158 11 / 0.1);
+			transform: scale(1.02);
+		}
+
+		/* Tech tag hover: amber border + bg amber-10 + scale 1.05 */
+		.tech-tag-hover {
+			transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
+			transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+			transition-duration: 200ms;
+			cursor: pointer;
+		}
+
+		.tech-tag-hover:hover {
+			border-color: var(--color-accent);
+			background-color: rgb(245 158 11 / 0.1);
+			transform: scale(1.05);
+		}
+
+		/* Featured pulse: 2s infinite pulse effect */
+		.featured-pulse {
+			animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+		}
+
+		/* Slide-in cascade: 300ms ease-out with 50ms nth-child stagger */
+		.slide-in-cascade {
+			animation: slideInCascade 300ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+		}
+
+		.slide-in-cascade:nth-child(1) { animation-delay: 0ms; }
+		.slide-in-cascade:nth-child(2) { animation-delay: 50ms; }
+		.slide-in-cascade:nth-child(3) { animation-delay: 100ms; }
+		.slide-in-cascade:nth-child(4) { animation-delay: 150ms; }
+		.slide-in-cascade:nth-child(5) { animation-delay: 200ms; }
+
+		/* Icon link hover: accent color on hover */
+		.icon-link-hover {
+			transition-property: color;
+			transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+			transition-duration: 200ms;
+		}
+
+		.icon-link-hover:hover {
+			color: var(--color-accent);
+		}
+	}
+
+	@keyframes slideInCascade {
+		from {
+			opacity: 0;
+			transform: translateY(-4px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+}
+
