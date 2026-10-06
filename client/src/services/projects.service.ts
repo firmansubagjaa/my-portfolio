@@ -38,6 +38,10 @@ export async function getPublicProjects(
 		searchParams.append("status", params.status);
 	}
 
+	if (params.featured === true) {
+		searchParams.append("featured", "true");
+	}
+
 	const queryString = searchParams.toString();
 	const url = queryString ? `/api/v1/projects?${queryString}` : "/api/v1/projects";
 

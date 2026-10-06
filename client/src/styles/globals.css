@@ -69,3 +69,13 @@
 	background-color: var(--color-surface);
 	border-bottom-color: var(--color-border);
 }
+
+/* Shiki syntax highlighter styling */
+.shiki-wrapper pre {
+	@apply overflow-x-auto rounded bg-bg p-4 my-4;
+	background-color: var(--color-bg) !important;
+}
+
+.shiki-wrapper code {
+	font-family: "JetBrains Mono", monospace;
+}

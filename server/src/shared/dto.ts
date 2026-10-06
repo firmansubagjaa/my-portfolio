@@ -67,6 +67,7 @@ export const publicProjectListQuerySchema = projectListQuerySchema
 	.extend({
 		status: z.enum(["published", "archived"]).default("published"),
 		limit: z.coerce.number().int().min(1).max(50).default(6),
+		featured: z.coerce.boolean().optional(),
 	})
 	.refine((data) => data.limit <= 50, {
 		message: "Limit maksimal 50",
