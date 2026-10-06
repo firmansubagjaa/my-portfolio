@@ -45,16 +45,14 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
 		};
 	}, [code, language]);
 
-	return (
+	return highlighted ? (
+		<div
+			dangerouslySetInnerHTML={{ __html: highlighted }}
+			className="shiki-wrapper my-4"
+		/>
+	) : (
 		<pre className="overflow-x-auto rounded bg-bg p-4 my-4">
-			{highlighted ? (
-				<code
-					dangerouslySetInnerHTML={{ __html: highlighted }}
-					className={`language-${language}`}
-				/>
-			) : (
-				<code className={`language-${language}`}>{code}</code>
-			)}
+			<code className={`language-${language}`}>{code}</code>
 		</pre>
 	);
 }

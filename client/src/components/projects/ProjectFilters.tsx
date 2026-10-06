@@ -43,6 +43,10 @@ export function ProjectFilters({ filters, onFiltersChange }: ProjectFiltersProps
 		onFiltersChange({ category });
 	};
 
+	const handleFeaturedToggle = () => {
+		onFiltersChange({ featured: filters.featured ? undefined : true });
+	};
+
 	return (
 		// <search> is the semantic equivalent of role="search"; class="block" for older engines
 		<search className="mb-8 block">
@@ -64,6 +68,25 @@ export function ProjectFilters({ filters, onFiltersChange }: ProjectFiltersProps
 						className="w-full rounded-lg border border-border bg-bg px-4 py-2 text-fg placeholder-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
 					/>
 				</div>
+
+				{/* Featured Filter */}
+				<fieldset>
+					<legend className="block text-sm font-medium text-fg mb-3">Filter tambahan</legend>
+					<div className="flex gap-2">
+						<button
+							type="button"
+							aria-pressed={filters.featured === true}
+							onClick={handleFeaturedToggle}
+							className={`rounded-full px-4 py-2 font-medium transition-colors ${
+								filters.featured === true
+									? "bg-accent text-bg"
+									: "border border-border text-fg hover:border-accent"
+							}`}
+						>
+							⭐ Unggulan
+						</button>
+					</div>
+				</fieldset>
 
 				{/* Category Filter */}
 				<fieldset>

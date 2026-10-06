@@ -61,6 +61,11 @@ export function buildProjectWhere(filters: Partial<PublicProjectListQuery>) {
 		conditions.push(eq(projects.category, filters.category));
 	}
 
+	// Featured filter
+	if (filters.featured === true) {
+		conditions.push(eq(projects.is_featured, true));
+	}
+
 	// Search filter - search title, summary, or tech_stack
 	if (filters.search && filters.search.trim()) {
 		const escapedSearch = escapeLike(filters.search.trim());

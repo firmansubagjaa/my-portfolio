@@ -7,7 +7,7 @@ import { publicProjectListQuerySchema } from "@/types/api";
 const DEFAULT_FILTERS: PublicProjectListQuery = { page: 1, limit: 6, status: "published" };
 
 // Keys that reset pagination when they change
-const RESET_PAGE_KEYS = ["category", "search", "status"] as const;
+const RESET_PAGE_KEYS = ["category", "search", "status", "featured"] as const;
 
 /** URL is the source of truth; invalid params fall back to defaults (no crash, no redirect). */
 function parseFilters(searchParams: URLSearchParams): PublicProjectListQuery {
