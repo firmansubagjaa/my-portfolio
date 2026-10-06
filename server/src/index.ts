@@ -4,9 +4,15 @@
 import { Hono } from "hono";
 import { secureHeaders } from "hono/secure-headers";
 import { cors } from "hono/cors";
+import { except } from "hono/combine";
 import { HTTPException } from "hono/http-exception";
 import { timeout } from "hono/timeout";
 import { env } from "./config/env";
+import {
+	API_REQUEST_TIMEOUT_MS,
+	BUN_IDLE_TIMEOUT_S,
+	UPLOAD_REQUEST_TIMEOUT_MS,
+} from "./config/timeouts";
 import { healthController } from "./controllers/health.controller";
 import { authController } from "./controllers/auth.controller";
 import { projectController } from "./controllers/project.controller";
@@ -33,14 +39,15 @@ app.use(
 	}),
 );
 
+const timeoutException = () =>
+	new HTTPException(504, { message: "Server terlalu lama merespons" });
+
 // Fail hung requests (e.g. a stuck DB call) with a JSON 504 from the error
-// handler instead of a dropped socket. Must stay below idleTimeout below.
+// handler instead of a dropped socket. Uploads are excluded here and get
+// their own longer limit below. See config/timeouts.ts for the invariant.
 app.use(
 	"/api/*",
-	timeout(
-		20_000,
-		() => new HTTPException(504, { message: "Server terlalu lama merespons" }),
-	),
+	except("/api/v1/upload*", timeout(API_REQUEST_TIMEOUT_MS, timeoutException)),
 );
 
 // Register routes
@@ -53,6 +60,10 @@ app.use("/api/v1/admin*", requireAuth);
 app.route("/api/v1/admin", adminController);
 
 // Upload routes (protected) - HIGH-2: Correct middleware pattern
+app.use(
+	"/api/v1/upload*",
+	timeout(UPLOAD_REQUEST_TIMEOUT_MS, timeoutException),
+);
 app.use("/api/v1/upload*", requireAuth);
 app.route("/api/v1/upload", uploadController);
 
@@ -60,8 +71,8 @@ app.route("/api/v1/upload", uploadController);
 app.onError(errorHandler);
 app.notFound(notFoundHandler);
 
-// Bun reads serve options from the default export. Its default idleTimeout (10s)
-// cut slow-but-legitimate requests when the DB pooler was slow, so raise it above
-// the request timeout (20s) so the JSON 504 is always sent first. The Hono
-// instance itself stays the default export so Vercel's Hono detection still works.
-export default Object.assign(app, { idleTimeout: 30 });
+// Bun reads serve options from the default export. idleTimeout is derived in
+// config/timeouts.ts so it always exceeds every request timeout and the JSON
+// 504 reaches the client first. The Hono instance itself stays the default
+// export so Vercel's Hono detection still works.
+export default Object.assign(app, { idleTimeout: BUN_IDLE_TIMEOUT_S });
