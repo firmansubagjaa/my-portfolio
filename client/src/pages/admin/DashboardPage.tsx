@@ -7,7 +7,7 @@ import { Button, buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Input } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
+import { SelectField } from "@/components/ui/Select";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Spinner } from "@/components/ui/Spinner";
 import { CATEGORY_LABELS, STATUS_LABELS } from "@/config/constants";
@@ -45,14 +45,6 @@ const STATUS_DOT: Record<ProjectStatus | "all", string> = {
 	draft: "bg-yellow-400",
 	archived: "bg-muted",
 };
-
-function isCategory(value: string): value is ProjectCategory {
-	return (PROJECT_CATEGORIES as readonly string[]).includes(value);
-}
-
-function isStatus(value: string): value is ProjectStatus {
-	return (PROJECT_STATUSES as readonly string[]).includes(value);
-}
 
 function formatDate(iso: string): string {
 	const date = new Date(iso);
@@ -286,25 +278,23 @@ export default function DashboardPage() {
 							value={searchInput}
 							onChange={(e) => setSearchInput(e.target.value)}
 						/>
-						<Select
+						<SelectField
 							label="Kategori"
 							placeholder="Semua Kategori"
 							options={categoryOptions}
-							value={category}
-							onChange={(e) => {
-								const value = e.target.value;
-								setCategory(isCategory(value) ? value : "");
+							value={category || null}
+							onValueChange={(value) => {
+								setCategory(value ?? "");
 								setPage(1);
 							}}
 						/>
-						<Select
+						<SelectField
 							label="Status"
 							placeholder="Semua Status"
 							options={statusOptions}
-							value={status}
-							onChange={(e) => {
-								const value = e.target.value;
-								setStatus(isStatus(value) ? value : "");
+							value={status || null}
+							onValueChange={(value) => {
+								setStatus(value ?? "");
 								setPage(1);
 							}}
 						/>

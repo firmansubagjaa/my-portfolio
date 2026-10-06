@@ -18,7 +18,7 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Checkbox } from "../ui/Checkbox";
 import { Input } from "../ui/Input";
-import { Select } from "../ui/Select";
+import { SelectField } from "../ui/Select";
 import { Spinner } from "../ui/Spinner";
 import { Textarea } from "../ui/Textarea";
 import { GalleryUploadField } from "./GalleryUploadField";
@@ -277,21 +277,43 @@ export function ProjectForm({
 				/>
 
 				<div className="grid gap-5 sm:grid-cols-2">
-					<Select
-						label="Kategori"
-						required
-						placeholder={false}
-						options={categoryOptions}
-						{...register("category")}
-						error={errors.category}
+					<Controller
+						name="category"
+						control={control}
+						render={({ field }) => (
+							<SelectField
+								label="Kategori"
+								required
+								options={categoryOptions}
+								name={field.name}
+								ref={field.ref}
+								value={field.value ?? null}
+								onValueChange={(value) => {
+									if (value) field.onChange(value);
+								}}
+								onBlur={field.onBlur}
+								error={errors.category}
+							/>
+						)}
 					/>
-					<Select
-						label="Status"
-						required
-						placeholder={false}
-						options={statusOptions}
-						{...register("status")}
-						error={errors.status}
+					<Controller
+						name="status"
+						control={control}
+						render={({ field }) => (
+							<SelectField
+								label="Status"
+								required
+								options={statusOptions}
+								name={field.name}
+								ref={field.ref}
+								value={field.value ?? null}
+								onValueChange={(value) => {
+									if (value) field.onChange(value);
+								}}
+								onBlur={field.onBlur}
+								error={errors.status}
+							/>
+						)}
 					/>
 				</div>
 
