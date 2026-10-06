@@ -1,6 +1,6 @@
+import { Code2, Link2 } from "lucide-react";
 import { motion } from "motion/react";
 import { useScrollInView } from "@/hooks/useScrollInView";
-import { Code2, Share2 } from "lucide-react";
 
 interface ContactLink {
 	label: string;
@@ -9,11 +9,14 @@ interface ContactLink {
 	ariaLabel: string;
 }
 
+// Note: Link2 is used for LinkedIn icon because lucide-react v1.52.0 does not export a "Linkedin" icon.
+// Link2 is semantically appropriate for a social profile link (represents connection/linking).
+// If lucide-react adds a dedicated Linkedin icon in future releases, swap Link2 → Linkedin here.
 const contactLinks: ContactLink[] = [
 	{
 		label: "LinkedIn",
 		href: "https://www.linkedin.com/in/firmannnn/",
-		icon: <Share2 size={24} />,
+		icon: <Link2 size={24} />,
 		ariaLabel: "Visit Firman Subagja on LinkedIn",
 	},
 	{
@@ -51,11 +54,7 @@ export function Contact() {
 	};
 
 	return (
-		<section
-			ref={ref}
-			id="contact"
-			className="w-full py-20 md:py-24 scroll-mt-20"
-		>
+		<section ref={ref} id="contact" className="w-full py-20 md:py-24 scroll-mt-20">
 			<div className="mx-auto max-w-6xl px-4">
 				{/* Heading */}
 				<motion.div
