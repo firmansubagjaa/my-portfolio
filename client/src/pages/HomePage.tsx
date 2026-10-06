@@ -1,6 +1,9 @@
-import { Link } from "react-router";
 import { BentoGrid } from "@/components/bento/BentoGrid";
 import { BentoSkeleton } from "@/components/bento/BentoSkeleton";
+import { Hero } from "@/components/sections/Hero";
+import { About } from "@/components/sections/About";
+import { TechStack } from "@/components/sections/TechStack";
+import { Contact } from "@/components/sections/Contact";
 import { useProjects } from "@/hooks/queries/use-projects";
 
 export default function HomePage() {
@@ -8,25 +11,23 @@ export default function HomePage() {
 	const projects = data?.items || [];
 
 	return (
-		<div className="max-w-6xl mx-auto px-4 py-16">
-			<h1 className="text-4xl font-bold text-fg mb-6">Selamat Datang</h1>
-			<p className="text-muted text-lg max-w-2xl mb-8">
-				Ini adalah portfolio profesional yang menampilkan proyek-proyek terbaik saya. Jelajahi
-				berbagai karya dan temukan bagaimana saya dapat membantu Anda mewujudkan ide menjadi
-				kenyataan.
-			</p>
-			<Link
-				to="/projects"
-				className="inline-block bg-accent text-bg px-6 py-3 rounded hover:bg-accent/90 transition-colors"
-			>
-				Lihat Semua Proyek
-			</Link>
+		<div className="w-full">
+			{/* Hero Section */}
+			<div className="max-w-6xl mx-auto px-4">
+				<Hero />
 
-			{/* Featured Projects */}
-			<div className="mt-16">
-				<h2 className="text-2xl font-bold text-fg mb-6">Proyek Unggulan</h2>
+				{/* Featured Projects */}
+				<section className="py-20 md:py-24 scroll-mt-20">
+					<h2 className="text-3xl md:text-4xl font-bold text-fg mb-8">Featured Projects</h2>
+					{isLoading ? <BentoSkeleton /> : <BentoGrid projects={projects} prioritizeFirst />}
+				</section>
+			</div>
 
-				{isLoading ? <BentoSkeleton /> : <BentoGrid projects={projects} prioritizeFirst />}
+			{/* Additional Sections */}
+			<div className="max-w-6xl mx-auto px-4">
+				<About />
+				<TechStack />
+				<Contact />
 			</div>
 		</div>
 	);

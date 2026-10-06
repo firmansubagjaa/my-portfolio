@@ -93,6 +93,41 @@ export const TECH_ICONS: Record<string, IconMetadata> = {
 		color: "#A855F7",
 		label: "Transformers",
 	},
+	"next.js": {
+		icon: Code2,
+		color: "#3B82F6",
+		label: "Next.js",
+	},
+	nextjs: {
+		icon: Code2,
+		color: "#3B82F6",
+		label: "Next.js",
+	},
+	pandas: {
+		icon: Code,
+		color: "#EAB308",
+		label: "Pandas",
+	},
+	pytorch: {
+		icon: Brain,
+		color: "#A855F7",
+		label: "PyTorch",
+	},
+	"github actions": {
+		icon: Zap,
+		color: "#10B981",
+		label: "GitHub Actions",
+	},
+	"tailwind css": {
+		icon: Palette,
+		color: "#06B6D4",
+		label: "Tailwind CSS",
+	},
+	git: {
+		icon: Code,
+		color: "#64748B",
+		label: "Git",
+	},
 };
 
 // Category to icon mappings
