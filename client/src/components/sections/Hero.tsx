@@ -1,6 +1,6 @@
-import { Link } from "react-router";
+import { ArrowRight, Download } from "lucide-react";
 import { motion } from "motion/react";
-import { ArrowRight } from "lucide-react";
+import { Link } from "react-router";
 
 interface HeroCTA {
 	label: string;
@@ -27,6 +27,12 @@ const defaultCTAs: HeroCTA[] = [
 		label: "Get in Touch",
 		href: "#contact",
 		variant: "secondary",
+	},
+	{
+		label: "Download CV",
+		href: "https://drive.google.com/file/d/1WG_zgy7cRf93RH65tDSpBiTqZvizfDCM/view?usp=drive_link",
+		variant: "secondary",
+		icon: <Download size={18} />,
 	},
 ];
 
@@ -136,7 +142,7 @@ export function Hero({
 											}`}
 										>
 											{cta.label}
-											{cta.variant === "primary" && <ArrowRight size={18} />}
+											{cta.icon ? cta.icon : cta.variant === "primary" && <ArrowRight size={18} />}
 										</a>
 									)}
 								</motion.div>
