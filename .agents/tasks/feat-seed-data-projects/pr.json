@@ -1,0 +1,31 @@
+{
+  "url": "https://github.com/firmansubagjaa/my-portfolio/pull/16",
+  "number": 16,
+  "title": "feat: seed data for 4 demo projects",
+  "branch": "feat/seed-data-projects",
+  "state": "open",
+  "projects": [
+    {
+      "title": "AI-Powered Dashboard",
+      "category": "fullstack",
+      "featured": true
+    },
+    {
+      "title": "Sentiment Analysis Engine",
+      "category": "ai_ml",
+      "featured": true
+    },
+    {
+      "title": "Real-time Notification System",
+      "category": "backend",
+      "featured": true
+    },
+    {
+      "title": "ETL Data Pipeline",
+      "category": "backend",
+      "featured": false
+    }
+  ],
+  "featured_count": 3,
+  "total_projects": 4
+}

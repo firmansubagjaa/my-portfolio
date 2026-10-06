@@ -1,0 +1,39 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Create icon-aware UI components and integrate them across portfolio views. Builds FeaturedBadge, TechTag, CategoryBadge components; updates ProjectCard (featured badge + tech tags), ProjectFilters (Star icon on featured button), ProjectMeta (metadata icons + tech tag list), ProjectDetailPage (category badge). Enables visual hierarchy via icons + colors, motion feedback on interaction.",
+  "status": "completed",
+  "steps": [
+    "Create client/src/components/ui/FeaturedBadge.tsx: renders Star icon (16px, filled amber) with optional 'Featured' text label, uses featured-pulse class from globals.css.",
+    "Create client/src/components/ui/TechTag.tsx: renders icon (14-16px) + tech name (small font), imports getTechIcon from src/lib/techStackIcons.ts, applies correct color, includes interactive cursor-pointer and tech-tag-hover class, fallback to Code icon + muted if tech not in map.",
+    "Create client/src/components/ui/CategoryBadge.tsx: renders category icon (16px) + category label, imports getCategoryIcon, applies category color.",
+    "Update client/src/components/bento/ProjectCard.tsx: import FeaturedBadge and TechTag; add FeaturedBadge in header when is_featured=true; replace Badge component calls with TechTag for tech_stack items (preserve MAX_BADGES logic); apply card-hover class to article root; verify featured star pulses on hover.",
+    "Update client/src/components/projects/ProjectFilters.tsx: import Star icon from lucide-react; replace ⭐ emoji with <Star size={16} className=\"fill-current\" /> in featured filter button; preserve toggle logic and aria-pressed.",
+    "Update client/src/components/projects/ProjectMeta.tsx: import Calendar, Code, Github, ExternalLink icons; replace text links section with icon+text meta section (Calendar + date, Code + 'View Code', Github + 'Repository', ExternalLink for demo); apply icon-link hover (amber); replace tech stack Badge with TechTag components.",
+    "Update client/src/pages/ProjectDetailPage.tsx: import CategoryBadge; add it near title; verify ProjectMeta icons render correctly; test responsive layout at 390px."
+  ],
+  "acceptance_criteria": [
+    "FeaturedBadge, TechTag, CategoryBadge components render without error",
+    "ProjectCard displays featured badge on 3 projects, tech tags show correct icon + color",
+    "ProjectFilters shows Lucide Star icon (not emoji), featured toggle shows 3/1 projects correctly",
+    "ProjectMeta displays date, code, github, external-link icons with amber hover effect",
+    "ProjectDetailPage shows category badge near title",
+    "Responsive at 390px: no text overflow, icons 14-16px, tap targets ≥44px, tech tags wrap",
+    "Keyboard navigation: Tab through all interactive elements, visible focus rings, icon-only buttons have aria-labels",
+    "Console clean: no Lucide import warnings, no TypeScript errors"
+  ],
+  "verification": [
+    "Start dev server: `cd client && bun run dev`, navigate to http://localhost:5173/projects",
+    "Verify ProjectCard: 3 projects show featured star + pulse on hover, tech tags display correct icon + color, card hover applies border/shadow/scale",
+    "Verify ProjectFilters: featured button shows Star icon, toggle works (3 visible / 1 hidden, then 4 visible)",
+    "Verify ProjectMeta: metadata icons render for date/links, hover turns amber, links functional",
+    "Verify ProjectDetailPage: category badge appears, meta icons below content, all links accessible",
+    "Responsive DevTools at 390px: no overflow, 1-column layout, icons visible, tap targets adequate",
+    "Keyboard test: Tab through page, verify focus ring visible on all interactive elements",
+    "Console check: no Lucide warnings, no TypeScript errors",
+    "Run `cd client && bun run typecheck` — 0 errors",
+    "Run `cd client && bun run build` — build succeeds"
+  ],
+  "blocked_reason": null,
+  "findings": "All components implemented and tested successfully. Build passes with 0 TypeScript errors. Verified: (1) FeaturedBadge renders with Star icon + featured-pulse animation, (2) TechTag displays icon + tech name with tech-tag-hover effect, (3) CategoryBadge shows category icon + label, (4) ProjectCard: featured badge shows on featured projects, tech tags replaced Badge components with correct icon/color, card-hover applied, (5) ProjectFilters: Star icon replaces emoji, featured toggle preserves logic, (6) ProjectMeta: metadata icons render with Calendar/Code/GitBranch/ExternalLink, icon-link-hover turns amber on hover, tech stack replaced with TechTag, (7) ProjectDetailPage: CategoryBadge appears near title. Motion utilities: featured-pulse (2s pulse), tech-tag-hover (scale 1.05 + amber border), card-hover (scale 1.02 + amber border + shadow), icon-link-hover (amber text). All interactive elements keyboard accessible with aria-labels and focus-visible support. Dev build succeeds, typecheck 0 errors, production build succeeds with warnings about chunk sizes (expected for this scale)."
+}

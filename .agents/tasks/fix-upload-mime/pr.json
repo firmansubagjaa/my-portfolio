@@ -1,0 +1,8 @@
+{
+  "url": "https://github.com/firmansubagjaa/my-portfolio/pull/13",
+  "number": 13,
+  "title": "fix: derive upload MIME from magic bytes for Supabase storage",
+  "branch": "fix/upload-mime-type",
+  "base": "main",
+  "repo": "firmansubagjaa/my-portfolio"
+}

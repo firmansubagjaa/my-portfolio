@@ -1,0 +1,26 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Install lucide-react and create foundational icon + motion utilities. Sets up tech-to-icon mapping (TECH_ICONS, CATEGORY_ICONS) and CSS motion classes (hover-transition, card-hover, tech-tag-hover, featured-pulse, slide-in-cascade) with prefers-reduced-motion support. Foundation for all icon-aware components.",
+  "status": "completed",
+  "steps": [
+    "Install lucide-react: `bun add lucide-react` in client/. Verify no peer dependency errors.",
+    "Create client/src/lib/techStackIcons.ts with TECH_ICONS map (React, TypeScript, Node.js, PostgreSQL, Python, FastAPI, Bun, WebSocket, Redis, Docker, AWS, Tailwind, Transformers), CATEGORY_ICONS map (fullstack, ai_ml, backend, frontend, experiment), and getTechIcon(tech) / getCategoryIcon(category) helpers that return {icon: LucideIcon, color: string, label: string} or fallback.",
+    "Update client/src/styles/globals.css: add CSS custom properties for spacing grid (--spacing-2 through --spacing-24), and @layer utilities for .hover-transition (200ms expo-out), .card-hover (border amber/shadow/scale), .tech-tag-hover (border amber/bg amber-10/scale), .featured-pulse (2s infinite pulse), .slide-in-cascade (300ms ease-out with nth-child 50ms stagger). All wrapped in @media (prefers-reduced-motion: no-preference)."
+  ],
+  "acceptance_criteria": [
+    "`bun list lucide-react` shows installed version, no warnings",
+    "`bun run typecheck` passes in client/",
+    "techStackIcons.ts exports getTechIcon, getCategoryIcon, TECH_ICONS, CATEGORY_ICONS, no unused imports",
+    "globals.css has motion utilities, CSS custom properties defined, no syntax errors",
+    "`bun run build` completes without errors"
+  ],
+  "verification": [
+    "Run `cd client && bun list lucide-react` — confirms installed",
+    "Run `cd client && bun run typecheck` — 0 errors",
+    "Run `cd client && bun run build` — build succeeds, dist/ contains client bundles",
+    "Inspect dist/index.html and dist/assets/*.js — no Lucide warnings in console, bundle includes icon tree-shaking"
+  ],
+  "blocked_reason": null,
+  "findings": "Icon system foundation complete. All 13 tech icons + 5 category icons implemented with correct colors as specified. Motion utilities (hover-transition 200ms expo-out, card-hover with scale 1.02 + shadow, tech-tag-hover with scale 1.05, featured-pulse 2s infinite, slide-in-cascade 300ms with 50ms stagger) ready for component integration. CSS custom properties for spacing grid available. FEAT-002 should focus on integrating icons into ProjectCard, ProjectFilters, ProjectMeta components using getTechIcon() and getCategoryIcon() helpers."
+}

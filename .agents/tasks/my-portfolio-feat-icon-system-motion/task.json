@@ -1,0 +1,7 @@
+{
+  "task_id": "task-icon-system-motion",
+  "task_description": "Implement Lucide-based icon system and motion design (hover states, cascade animations) across portfolio components. Integrates tech stack icons with categorical colors, featured badges, metadata icons, and accessibility-compliant transitions.",
+  "status": "pending",
+  "feature_order": ["FEAT-001", "FEAT-002"],
+  "blocked_reason": null
+}

@@ -1,0 +1,9 @@
+{
+  "url": "https://github.com/firmansubagjaa/my-portfolio/pull/12",
+  "number": 12,
+  "title": "fix(server): keep API responsive on slow DB and fix check-slug route",
+  "branch": "fix/backend-db-reliability",
+  "base": "main",
+  "commit": "41ec0dd",
+  "state": "OPEN"
+}

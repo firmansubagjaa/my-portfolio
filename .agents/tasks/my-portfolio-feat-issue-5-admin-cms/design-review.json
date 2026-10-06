@@ -1,0 +1,57 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    {
+      "id": "HIGH-1",
+      "severity": "HIGH",
+      "title": "Slug Availability Check UX Flow Unspecified",
+      "location": "ProjectForm.tsx section (lines ~1710–1770)",
+      "problem": "The design resolves slug conflict via 'Option B' but doesn't specify client-side availability check behavior: timing (auto on type? on blur?), loading state, UI indicators (where shown?), interaction with auto-generate button. Implementer must guess.",
+      "impact": "Missing visual feedback, unclear UX timing, potential confusing behavior (check succeeds then 409 on submit). Race condition between check and submit is inherent but UX must guide user expectations.",
+      "fix": "Add detailed specification: 'Check triggers on slug blur (debounced). Show spinner while checking. Show ✓ if available, ⚠ if unavailable (advisory only). On 409 error from server, show error banner and invalidate check to clear stale UI. User can auto-generate or edit manually, then resubmit.' Also add useCheckSlugAvailability hook to use-admin-projects.ts with enabled and staleTime logic."
+    },
+    {
+      "id": "HIGH-2",
+      "severity": "HIGH",
+      "title": "File Upload Endpoint Route Registration Not Specified",
+      "location": "Main Route Registration section (lines ~1275–1295)",
+      "problem": "Design shows `app.route(\"/api/v1/upload\", uploadController)` but doesn't clarify: (1) exact endpoint path structure (is it /api/v1/upload or /api/v1/upload/?), (2) how requireAuth middleware applies (current code `app.use(\"/api/v1/upload/*\", requireAuth)` won't match the actual route due to Hono routing semantics). This is a **security bug** — unauthenticated users could access /api/v1/upload and /api/v1/admin routes without session validation.",
+      "impact": "Auth middleware enforcement fails silently. Unauthenticated users can access admin endpoints and upload files. Critical security issue.",
+      "fix": "Specify correct middleware/routing pattern. Recommended: use `app.use(\"/api/v1/upload*\", requireAuth)` (no trailing /*) and `app.use(\"/api/v1/admin*\", requireAuth)` to match both /api/v1/upload and /api/v1/upload/*. Document exact Hono routing pattern. Example: adminController defines GET /projects (becomes /api/v1/admin/projects), POST /projects (becomes /api/v1/admin/projects), GET /projects/:id (becomes /api/v1/admin/projects/:id). Update design's index.ts code block with corrected middleware application."
+    },
+    {
+      "id": "MEDIUM-3",
+      "severity": "MEDIUM",
+      "title": "Unclear Timing of Slug Availability Check vs. Server Validation",
+      "location": "ProjectForm.tsx and POST /admin/projects sections (lines ~1710–1800, ~1560–1610)",
+      "problem": "After server returns 409 slug conflict error, the form shows stale advisory UI (still displays 'available ✓'). Design doesn't specify whether the client-side availability check is automatically invalidated/re-run after a 409 error, or if it remains stale. User may be confused why a 'checked as available' slug is now unavailable.",
+      "impact": "Confusing UX after server conflict error. User doesn't know whether to trust the earlier availability check result.",
+      "fix": "In ProjectForm's error handler for 409 ConflictError: (1) display error banner 'Slug sudah digunakan', (2) call `queryClient.invalidateQueries({ queryKey: ['admin', 'check-slug', slug] })` to force re-check, (3) update JSX to only show checkmark/warning if query data is fresh (check `isStale` flag). This ensures UI accurately reflects current state after a 409 error."
+    },
+    {
+      "id": "MEDIUM-4",
+      "severity": "MEDIUM",
+      "title": "Admin Routes Structure Not Aligned with Frontend Patterns",
+      "location": "Admin Pages section (DashboardPage.tsx, ProjectEditorPage.tsx) (lines ~1920–2100)",
+      "problem": "Design specifies admin pages at /admin, /admin/projects/new, /admin/projects/:id/edit but doesn't clarify: (1) how routes are defined in frontend router, (2) what ProtectedRoute component looks like, (3) how it checks authentication and redirects on 401. Assumed but not verified in existing codebase. Design says 'ProtectedRoute redirects on 401' but implementer must reverse-engineer exact pattern.",
+      "impact": "Minor — implementer can reason through this. But without specification, there's risk of misalignment with existing auth patterns (e.g., could be global query client error handler instead of component-level).",
+      "fix": "Add 'Frontend Route Structure' section to design documenting: (1) route definitions showing ProtectedRoute wrapper, (2) ProtectedRoute component implementation (calls useMe, redirects on 401 or error), (3) that /admin/login is unprotected and displays login form. Include code example of router configuration and ProtectedRoute component."
+    }
+  ],
+  "verified_assumptions": [
+    "✅ requireAuth middleware exists in server/src/middlewares/auth.ts and enforces session validation correctly",
+    "✅ Existing project model functions (listProjects, findPublicProjectBySlug) exist and can be extended with admin functions",
+    "✅ Database schema supports all project fields with correct constraints (slug unique, status/category enums, arrays)",
+    "✅ Zod schemas already defined with all validation rules (createProjectSchema, updateProjectSchema, enums)",
+    "✅ Supabase env vars configured (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_STORAGE_BUCKET)",
+    "✅ Frontend API client established with apiFetch, apiPost, apiPut, apiDelete, ApiClientError pattern",
+    "✅ React Query cache invalidation pattern (queryClient.invalidateQueries with exact: false) verified"
+  ],
+  "unverified_assumptions": [
+    "⚠️ ProtectedRoute component assumed but NOT found in codebase — must be implemented or existing auth pattern clarified",
+    "⚠️ @uiw/react-md-editor assumed installed but not verified — likely needs to be added as new dependency",
+    "⚠️ Admin route /admin/login assumed to exist but not specified in design"
+  ],
+  "reviewDoc": "d:\\File Defir\\Projects\\My Portfolio\\.agents\\tasks\\my-portfolio-feat-issue-5-admin-cms/design-review.md",
+  "summary": "Design is comprehensive and well-reasoned but contains 2 HIGH findings that block safe implementation: (1) slug availability check UX flow unspecified, (2) upload route registration ambiguous causing auth middleware to not be enforced. 2 MEDIUM findings require minor clarifications. Once HIGH findings are resolved, design is solid for implementation."
+}

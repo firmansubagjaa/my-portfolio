@@ -1,0 +1,18 @@
+{
+  "verdict": "APPROVED",
+  "findings": [
+    {
+      "label": "XSS surface via dangerouslySetInnerHTML",
+      "description": "Code block uses dangerouslySetInnerHTML with HTML from Shiki. This is safe as long as Shiki output is trusted (it is); however, if the language parameter or user-supplied code could be injected maliciously, the highlighting could be bypassed. Confirm Shiki is vended via npm lockfile and that language is validated server-side before rendering."
+    },
+    {
+      "label": "CSS targeting specificity",
+      "description": "`.shiki-wrapper pre` and `.shiki-wrapper code` rules use tag selectors without strong specificity. If Shiki's HTML contains inline styles or other CSS rules, they may override the wrapper styles. The `!important` on `background-color` is a workaround; verify in browser that code block background stays correct across all highlighting contexts."
+    },
+    {
+      "label": "Featured filter URL encoding",
+      "description": "The `featured` parameter is added as `featured=true` but parsing uses `z.coerce.boolean()`. This assumes the query string will always contain the string \"true\"; if a different client or cache layer sends `featured=1` or `featured=yes`, the filter will not match. Consider whether stricter validation or normalization is needed here."
+    }
+  ],
+  "reviewDoc": "d:\\File Defir\\Projects\\My Portfolio\\.agents\\tasks\\fix-public-pages-bugs\\review.md"
+}

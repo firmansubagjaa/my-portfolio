@@ -1,0 +1,9 @@
+{
+  "url": "https://github.com/firmansubagjaa/my-portfolio/pull/14",
+  "number": 14,
+  "title": "Replace native admin select with shadcn/ui Base UI Select",
+  "branch": "feat/shadcn-select",
+  "base": "main",
+  "repo": "firmansubagjaa/my-portfolio",
+  "head_commit": "c193c54"
+}

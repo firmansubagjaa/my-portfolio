@@ -1,0 +1,26 @@
+{
+  "project_type": "Monorepo: Bun runtime, React 19 client + Hono/Bun server, shared TypeScript DTOs. Client: Vite 8.3 + Tailwind CSS 4, motion/react 11.15 for animations. Server: Hono web framework, Drizzle ORM, PostgreSQL, Zod validation.",
+  "language": "TypeScript (strict), React JSX/TSX, CSS",
+  "build_system": "Bun with npm-compatible workspace structure. Client: `bun run dev` (Vite, proxies /api/v1 to localhost:3000), `bun run build` (tsc + vite build), `bun run typecheck` (tsc --noEmit). Server: `bun run dev`, `bun run seed` (database initialization). Biome for linting.",
+  "test_framework": "bun test (native Bun test runner)",
+  "build_command": "bun run build",
+  "test_command": "bun test",
+  "verification_instructions": "Start dev server: `bun run dev` from client/. Navigate to http://localhost:5173/projects. Verify: (1) 4 projects render in Bento Grid with cascade animation, (2) featured filter button shows Lucide Star icon, toggle shows 3 featured / 1 unfeatured, (3) tech tags display with correct icon + color, (4) card hover: border amber, shadow, scale 1.02; featured star pulses, (5) metadata icons on detail page show Calendar/Code/ExternalLink, (6) responsive at 390px: no overflow, icons visible 14-16px, tap targets 44px+, (7) console clean (no Lucide warnings), (8) keyboard navigation works (Tab, visible focus rings). Run `bun run build` and `bun run typecheck` — both pass with 0 errors.",
+  "snapshot_or_generated_files": null,
+  "environment_constraints": "Dev server runs at http://localhost:5173 (Vite default). API proxy to http://localhost:3000 (Hono server, must run separately). No local environment variables required for icon system (design tokens in globals.css via Tailwind @theme). Workspace paths use forward slashes; PowerShell paths require backslash conversion (git commands use -C flag).",
+  "contribution_requirements": "Follow design system (steering/design-system.md): dark mode, Warm Charcoal (#0C0A09) + Burnt Amber (#F59E0B) theme, Lexend + JetBrains Mono typography, Lucide icons. Anti-slop compliance: every icon conveys info (not decoration), motion 150-200ms hover + 300ms cascade, respect prefers-reduced-motion. All interactive elements keyboard accessible (aria-labels on icon-only buttons, focus-visible outlines). Code: type-safe TypeScript, tree-shake Lucide imports individually. No breaking changes to existing components; use composition (new components + incremental updates).",
+  "key_patterns": "Component structure: UI atoms in src/components/ui/ (Button, Badge, etc.); utilities in src/lib/ (cn, slugify, utils); page logic in src/pages/. Motion uses motion/react (domMax pre-loaded). Tailwind theme tokens (@theme) in globals.css map to CSS custom properties (--color-*). Existing color utilities (e.g., 'text-accent', 'bg-surface') rely on @theme tokens; tech colors (Blue, Green, Yellow, etc.) use Tailwind defaults or extended palette. Featured filter & category labels already exist in constants.ts (CATEGORY_LABELS). Seed projects have is_featured boolean, category enum, tech_stack array.",
+  "relevant_files": [
+    "client/src/components/bento/ProjectCard.tsx (update with FeaturedBadge + TechTag)",
+    "client/src/components/projects/ProjectFilters.tsx (update featured button with Star icon)",
+    "client/src/components/projects/ProjectMeta.tsx (update with metadata icons + TechTag)",
+    "client/src/pages/ProjectDetailPage.tsx (add CategoryBadge)",
+    "client/src/components/ui/Badge.tsx (study existing pattern)",
+    "client/src/styles/globals.css (add motion utilities + spacing grid)",
+    "client/src/lib/cn.ts (utility pattern to follow)",
+    "client/src/config/constants.ts (CATEGORY_LABELS, TRANSITION already defined)",
+    "server/src/db/seed.ts (confirms is_featured field, 3 featured projects, tech_stack structure)",
+    "server/src/shared/dto.ts (ProjectDTO, ProjectListItemDTO, PROJECT_CATEGORIES enum)"
+  ],
+  "directory_structure": "Worktree root: `.worktrees/icon-system-motion/` with `client/` and `server/`. Client structure: `src/components/` (bento/, form/, layout/, markdown/, motion/, projects/, ui/), `src/pages/` (admin/, HomePage.tsx, ProjectDetailPage.tsx, ProjectsPage.tsx, NotFoundPage.tsx), `src/lib/` (utilities), `src/styles/globals.css` (Tailwind theme), `src/types/api.ts` (re-exports from shared), `src/config/constants.ts` (labels, routes, transitions). Server structure: `src/db/` (schema, seed), `src/shared/dto.ts` (shared types), routes, services."
+}

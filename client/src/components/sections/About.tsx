@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { useScrollInView } from "@/hooks/useScrollInView";
 
 const aboutParagraphs = [
@@ -41,7 +41,7 @@ export function About() {
 		>
 			<div className="mx-auto max-w-6xl px-4">
 				{/* Heading */}
-				<motion.div
+				<m.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
 					transition={{ duration: 0.6, ease: "easeOut" }}
@@ -49,25 +49,25 @@ export function About() {
 				>
 					<h2 className="text-3xl md:text-4xl font-bold text-fg mb-2">About</h2>
 					<div className="h-1 w-12 bg-accent rounded-full" />
-				</motion.div>
+				</m.div>
 
 				{/* Paragraphs */}
-				<motion.div
+				<m.div
 					variants={containerVariants}
 					initial="hidden"
 					animate={inView ? "visible" : "hidden"}
 					className="max-w-3xl space-y-6"
 				>
 					{aboutParagraphs.map((paragraph, index) => (
-						<motion.p
+						<m.p
 							key={index}
 							variants={itemVariants}
 							className="text-base md:text-lg text-muted leading-relaxed"
 						>
 							{paragraph}
-						</motion.p>
+						</m.p>
 					))}
-				</motion.div>
+				</m.div>
 			</div>
 		</section>
 	);

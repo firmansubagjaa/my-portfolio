@@ -1,0 +1,80 @@
+## Login
+  logged in, url=/admin
+## Dashboard: trigger semantics
+  triggers: [{"role":"combobox","expanded":"false","labelledby":"base-ui-_r_4_-label","labelText":"Kategori","text":"Semua Kategori","height":38},{"role":"combobox","expanded":"false","labelledby":"base-ui-_r_9_-label","labelText":"Status","text":"Semua Status","height":38}]
+  search input height=38
+  [PASS] category trigger is a combobox labelled 'Kategori'
+  [PASS] status trigger labelled 'Status'
+  [PASS] default 'all' values shown
+  [PASS] trigger height matches search input
+  initial rows (2): [["AI/ML","Published"],["Backend","Published"]]
+  screenshot: screenshots/01-dashboard-closed.png
+## Dashboard: category filter (mouse)
+  options: ["Semua Kategori","Fullstack","AI/ML","Frontend","Backend","Experiment"]
+  popup: {"onTop":true,"zIndex":"50","rect":[489,372,388,202]}
+  [PASS] popup is topmost at all probe points (above sticky header z-40)
+  popup colors: {"popupBg":"rgb(28, 25, 23)","itemColor":"rgb(250, 250, 249)","border":"rgb(41, 37, 36)"}
+  screenshot: screenshots/02-dashboard-category-open.png
+  after close: listbox nodes in DOM=1, hidden popup=[{"hidden":false,"display":"none","ending":false}]
+  selected 'AI/ML', trigger='AI/ML', rows: [["AI/ML","Published"]]
+  [PASS] category trigger shows selection
+  [PASS] all rows have category AI/ML
+  last admin list requests: ["http://localhost:5175/api/v1/admin?page=1&limit=10","http://localhost:5175/api/v1/admin?page=1&limit=50","http://localhost:5175/api/v1/admin?page=1&limit=10&category=ai_ml"]
+  screenshot: screenshots/03-dashboard-filtered-category.png
+## Dashboard: 'all' resets category
+  after close: listbox nodes in DOM=1, hidden popup=[{"hidden":false,"display":"none","ending":false}]
+  [PASS] category trigger back to 'Semua Kategori'
+  [PASS] row count back to 2 (got 2)
+  last request after reset: http://localhost:5175/api/v1/admin?page=1&limit=10&category=ai_ml
+  [PASS] unfiltered rows restored after 'all'
+## Dashboard: keyboard on status filter
+  after 2x Tab from search: {"slot":"select-trigger","text":"Semua Status","focusVisible":true,"boxShadow":"rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.768595 0.0561344 0.154817 / 0.3) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px","border":"rgb(241, 155, 12)"}
+  [PASS] Tab reaches status trigger
+  [PASS] visible focus ring (:focus-visible + ring box-shadow)
+  screenshot: screenshots/04-keyboard-focus-ring.png
+  [PASS] ArrowDown opens the listbox
+  highlighted after open: 'Semua Status'
+  highlighted after ArrowDown: 'Draft'
+  highlighted after typing 'p': 'Published'
+  [PASS] type-ahead 'p' highlights Published
+  screenshot: screenshots/05-keyboard-typeahead.png
+  status trigger='Published', rows: [["AI/ML","Published"],["Backend","Published"]]
+  [PASS] Enter selects Published
+  [PASS] all rows Published
+  [PASS] focus stays on trigger after selecting
+  screenshot: screenshots/06-dashboard-filtered-status.png
+  [PASS] Enter opens the listbox
+  after Escape active: {"slot":"select-trigger","tag":"BUTTON","text":"Published"}
+  [PASS] Escape closes, focus returns to trigger, value unchanged
+  [PASS] Space opens the listbox
+  after close: listbox nodes in DOM=2, hidden popup=[{"hidden":false,"display":"none","ending":false},{"hidden":false,"display":"none","ending":false}]
+  [PASS] status reset to 'Semua Status'
+## Create project page
+  defaults: ["Fullstack","Draft"]
+  [PASS] create defaults Fullstack / Draft
+  create triggers: [{"labelText":"Kategori*","required":"true"},{"labelText":"Status*","required":"true"}]
+  [PASS] category labelled + aria-required
+  hidden inputs: [{"name":"category","value":"fullstack"},{"name":"status","value":"draft"}]
+  category options: ["Fullstack","AI/ML","Frontend","Backend","Experiment"]
+  [PASS] category popup topmost
+  screenshot: screenshots/07-create-category-open.png
+  after close: listbox nodes in DOM=1, hidden popup=[{"hidden":false,"display":"none","ending":false}]
+  [PASS] category changed to Backend
+  status popup {"onTop":true,"zIndex":"50","rect":[696,757,385,101]}, sticky action bar rect [228,820,896,64]
+  [PASS] status popup topmost (not hidden by the sticky action bar)
+  screenshot: screenshots/08-create-status-open.png
+## Create: submit without required fields
+  after submit: {"active":"title","invalid":["title","slug","summary",null],"selectsInvalid":[null,null]}
+  [PASS] focus moves to first invalid field (title)
+  [PASS] selects (always valued) are not flagged invalid
+  screenshot: screenshots/09-create-validation.png
+## Edit project page
+  editing {"href":"/admin/projects/410ec3ce-3a0d-4394-bb29-811c3d763e71/edit","category":"AI/ML","status":"Published"}
+  edit triggers: ["AI/ML","Published"]
+  [PASS] edit mode preselects saved category/status
+  screenshot: screenshots/10-edit-preselected.png
+  [PASS] saved category marked selected in the list (AI/ML)
+  screenshot: screenshots/11-edit-category-open.png
+  (edit form not submitted: no data changed)
+
+RESULT: ALL PASS

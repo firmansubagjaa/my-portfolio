@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { useScrollInView } from "@/hooks/useScrollInView";
 import { getTechIcon, CATEGORY_ICONS } from "@/lib/techStackIcons";
 
@@ -74,7 +74,7 @@ export function TechStack() {
 		>
 			<div className="mx-auto max-w-6xl px-4">
 				{/* Heading */}
-				<motion.div
+				<m.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
 					transition={{ duration: 0.6, ease: "easeOut" }}
@@ -82,10 +82,10 @@ export function TechStack() {
 				>
 					<h2 className="text-3xl md:text-4xl font-bold text-fg mb-2">Tech Stack</h2>
 					<div className="h-1 w-12 bg-accent rounded-full" />
-				</motion.div>
+				</m.div>
 
 				{/* Categories Grid */}
-				<motion.div
+				<m.div
 					variants={containerVariants}
 					initial="hidden"
 					animate={inView ? "visible" : "hidden"}
@@ -100,7 +100,7 @@ export function TechStack() {
 						const CategoryIconComponent = categoryIcon.icon;
 
 						return (
-							<motion.div
+							<m.div
 								key={category.id}
 								variants={categoryVariants}
 								className="bg-surface border border-border rounded-lg p-6 md:p-8"
@@ -128,7 +128,7 @@ export function TechStack() {
 										const TechIconComponent = techIcon.icon;
 
 										return (
-											<motion.div
+											<m.div
 												key={tech}
 												variants={itemVariants}
 												whileHover={{
@@ -152,15 +152,17 @@ export function TechStack() {
 												<span className="text-sm md:text-base font-medium text-muted group-hover:text-fg transition-colors">
 													{tech}
 												</span>
-											</motion.div>
+											</m.div>
 										);
 									})}
 								</div>
-							</motion.div>
+							</m.div>
 						);
 					})}
-				</motion.div>
+				</m.div>
 			</div>
 		</section>
 	);
 }
+
+

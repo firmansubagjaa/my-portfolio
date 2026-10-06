@@ -2,7 +2,7 @@ import { Link, NavLink, type NavLinkRenderProps } from "react-router";
 
 export function Header() {
 	return (
-		<header className="bg-surface border-b border-border">
+		<header className="bg-surface fixed w-full z-10 border-b border-border">
 			<nav
 				className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between"
 				aria-label="Navigasi utama"

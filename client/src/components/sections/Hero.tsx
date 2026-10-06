@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { ArrowRight } from "lucide-react";
 
 interface HeroCTA {
@@ -58,45 +58,45 @@ export function Hero({
 	};
 
 	return (
-		<motion.section
+		<m.section
 			className="w-full py-16 md:py-20"
 			initial="hidden"
 			animate="visible"
 			variants={containerVariants}
 		>
-			<div className="mx-auto max-w-6xl px-4">
+			<div className="mx-auto mt-10 max-w-6xl px-4">
 				<div className="flex flex-col items-center text-center">
 					{/* Title */}
-					<motion.h1
+					<m.h1
 						className="text-4xl md:text-5xl lg:text-6xl font-bold text-fg mb-4 max-w-4xl leading-tight"
 						variants={itemVariants}
 					>
 						{title}
-					</motion.h1>
+					</m.h1>
 
 					{/* Subtitle */}
-					<motion.h2
+					<m.h2
 						className="text-xl md:text-2xl lg:text-3xl font-semibold text-accent mb-4"
 						variants={itemVariants}
 					>
 						{subtitle}
-					</motion.h2>
+					</m.h2>
 
 					{/* Tagline */}
-					<motion.p
+					<m.p
 						className="text-base md:text-lg text-muted max-w-2xl mb-4 leading-relaxed"
 						variants={itemVariants}
 					>
 						{tagline}
-					</motion.p>
+					</m.p>
 
 					{/* Identifier */}
-					<motion.p className="text-sm md:text-base text-muted mb-8" variants={itemVariants}>
+					<m.p className="text-sm md:text-base text-muted mb-8" variants={itemVariants}>
 						{identifier}
-					</motion.p>
+					</m.p>
 
 					{/* CTAs */}
-					<motion.div
+					<m.div
 						className="flex flex-col sm:flex-row gap-4 items-center justify-center"
 						variants={itemVariants}
 					>
@@ -104,7 +104,7 @@ export function Hero({
 							const isInternalLink = cta.href.startsWith("#") || cta.href.startsWith("/");
 
 							return (
-								<motion.div
+								<m.div
 									key={index}
 									whileHover={{ scale: 1.05 }}
 									whileTap={{ scale: 0.98 }}
@@ -139,12 +139,12 @@ export function Hero({
 											{cta.variant === "primary" && <ArrowRight size={18} />}
 										</a>
 									)}
-								</motion.div>
+								</m.div>
 							);
 						})}
-					</motion.div>
+					</m.div>
 				</div>
 			</div>
-		</motion.section>
+		</m.section>
 	);
 }
