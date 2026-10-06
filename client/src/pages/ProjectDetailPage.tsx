@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router";
+import { CategoryBadge } from "@/components/ui/CategoryBadge";
 import { Markdown } from "@/components/markdown/Markdown";
 import { ProjectMeta } from "@/components/projects/ProjectMeta";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -40,6 +41,10 @@ export default function ProjectDetailPage() {
 			<Link to="/projects" className="text-accent hover:text-accent/80 mb-8 inline-block">
 				← Kembali ke Proyek
 			</Link>
+
+			<div className="mb-4">
+				<CategoryBadge category={project.category} />
+			</div>
 
 			<h1 className="text-4xl font-bold text-fg mb-4">{project.title}</h1>
 			<p className="text-muted text-lg mb-6">{project.summary}</p>
