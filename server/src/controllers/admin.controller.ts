@@ -52,6 +52,31 @@ adminController.get(
 	},
 );
 
+// GET /api/v1/admin/check-slug - Check slug availability
+// Must be registered before "/:id", otherwise "check-slug" is matched as an id.
+adminController.get(
+	"/check-slug",
+	validate("query", z.object({ slug: slugSchema })),
+	async (c) => {
+		const { slug } = c.req.valid("query");
+
+		const { db } = await import("../db");
+		const { projects } = await import("../db/schema");
+		const { eq } = await import("drizzle-orm");
+
+		const result = await db
+			.select({ id: projects.id })
+			.from(projects)
+			.where(eq(projects.slug, slug))
+			.limit(1);
+
+		return ApiResponse.success(c, {
+			data: { available: result.length === 0 },
+			message: "Slug availability check",
+		});
+	},
+);
+
 // GET /api/v1/admin/:id - Get project detail by ID
 adminController.get(
 	"/:id",
@@ -166,30 +191,6 @@ adminController.delete(
 		return ApiResponse.success(c, {
 			data: null,
 			message: "Proyek berhasil dihapus",
-		});
-	},
-);
-
-// GET /api/v1/admin/check-slug - Check slug availability
-adminController.get(
-	"/check-slug",
-	validate("query", z.object({ slug: slugSchema })),
-	async (c) => {
-		const { slug } = c.req.valid("query");
-
-		const { db } = await import("../db");
-		const { projects } = await import("../db/schema");
-		const { eq } = await import("drizzle-orm");
-
-		const result = await db
-			.select({ id: projects.id })
-			.from(projects)
-			.where(eq(projects.slug, slug))
-			.limit(1);
-
-		return ApiResponse.success(c, {
-			data: { available: result.length === 0 },
-			message: "Slug availability check",
 		});
 	},
 );
