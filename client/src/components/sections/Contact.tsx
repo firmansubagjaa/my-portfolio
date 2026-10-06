@@ -1,6 +1,6 @@
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { useScrollInView } from "@/hooks/useScrollInView";
-import { Code2, Share2 } from "lucide-react";
+import { Code2, Link2, Download } from "lucide-react";
 
 interface ContactLink {
 	label: string;
@@ -13,7 +13,7 @@ const contactLinks: ContactLink[] = [
 	{
 		label: "LinkedIn",
 		href: "https://www.linkedin.com/in/firmannnn/",
-		icon: <Share2 size={24} />,
+		icon: <Link2 size={24} />,
 		ariaLabel: "Visit Firman Subagja on LinkedIn",
 	},
 	{
@@ -21,6 +21,12 @@ const contactLinks: ContactLink[] = [
 		href: "https://github.com/firmansubagjaa",
 		icon: <Code2 size={24} />,
 		ariaLabel: "Visit Firman Subagja on GitHub",
+	},
+	{
+		label: "Download CV",
+		href: "https://drive.google.com/file/d/1WG_zgy7cRf93RH65tDSpBiTqZvizfDCM/view?usp=drive_link",
+		icon: <Download size={24} />,
+		ariaLabel: "Download Firman's CV from Google Drive",
 	},
 ];
 
@@ -58,7 +64,7 @@ export function Contact() {
 		>
 			<div className="mx-auto max-w-6xl px-4">
 				{/* Heading */}
-				<motion.div
+				<m.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
 					transition={{ duration: 0.6, ease: "easeOut" }}
@@ -66,27 +72,27 @@ export function Contact() {
 				>
 					<h2 className="text-3xl md:text-4xl font-bold text-fg">Let's Talk</h2>
 					<div className="h-1 w-12 bg-accent rounded-full mt-2" />
-				</motion.div>
+				</m.div>
 
 				{/* Subheading */}
-				<motion.p
+				<m.p
 					initial={{ opacity: 0, y: 20 }}
 					animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
 					transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
 					className="text-base md:text-lg text-muted max-w-2xl mb-12 leading-relaxed"
 				>
 					I'm open to interesting projects and collaboration opportunities.
-				</motion.p>
+				</m.p>
 
 				{/* Contact Links */}
-				<motion.div
+				<m.div
 					variants={containerVariants}
 					initial="hidden"
 					animate={inView ? "visible" : "hidden"}
 					className="flex flex-wrap gap-6 justify-center md:justify-start"
 				>
 					{contactLinks.map((link) => (
-						<motion.a
+						<m.a
 							key={link.label}
 							href={link.href}
 							target={link.href.startsWith("mailto:") ? undefined : "_blank"}
@@ -100,9 +106,9 @@ export function Contact() {
 							className="p-4 rounded-lg border border-border bg-surface hover:border-accent hover:text-accent transition-all duration-200 cursor-pointer text-muted focus:outline-2 focus:outline-offset-2 focus:outline-accent"
 						>
 							{link.icon}
-						</motion.a>
+						</m.a>
 					))}
-				</motion.div>
+				</m.div>
 			</div>
 		</section>
 	);
