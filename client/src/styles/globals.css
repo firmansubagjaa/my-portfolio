@@ -145,6 +145,17 @@
 		.slide-in-cascade:nth-child(3) { animation-delay: 100ms; }
 		.slide-in-cascade:nth-child(4) { animation-delay: 150ms; }
 		.slide-in-cascade:nth-child(5) { animation-delay: 200ms; }
+
+		/* Icon link hover: accent color on hover */
+		.icon-link-hover {
+			transition-property: color;
+			transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+			transition-duration: 200ms;
+		}
+
+		.icon-link-hover:hover {
+			color: var(--color-accent);
+		}
 	}
 
 	@keyframes slideInCascade {

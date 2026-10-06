@@ -1,6 +1,7 @@
 // File: /client/src/components/bento/ProjectCard.tsx
 import { Link } from "react-router";
-import { Badge } from "@/components/ui/Badge";
+import { FeaturedBadge } from "@/components/ui/FeaturedBadge";
+import { TechTag } from "@/components/ui/TechTag";
 import { CATEGORY_LABELS } from "@/config/constants";
 import type { ProjectListItemDTO } from "@/types/api";
 
@@ -16,7 +17,7 @@ export function ProjectCard({ project, priority = false }: ProjectCardProps) {
 	const extraTech = project.tech_stack.length - MAX_BADGES;
 
 	return (
-		<article className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-surface transition-colors duration-150 ease-out hover:border-muted has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-accent">
+		<article className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-surface card-hover has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-accent">
 			{project.thumbnail_url ? (
 				<img
 					src={project.thumbnail_url}
@@ -33,7 +34,10 @@ export function ProjectCard({ project, priority = false }: ProjectCardProps) {
 			)}
 
 			<div className="flex flex-1 flex-col gap-3 p-5">
-				<p className="font-mono text-xs text-muted">{CATEGORY_LABELS[project.category]}</p>
+				<div className="flex items-center justify-between gap-2">
+					<p className="font-mono text-xs text-muted">{CATEGORY_LABELS[project.category]}</p>
+					{project.is_featured && <FeaturedBadge />}
+				</div>
 				<h3 className="text-lg font-semibold text-fg">
 					{/* after:inset-0 makes the whole card clickable with a single tab stop */}
 					<Link
@@ -49,13 +53,11 @@ export function ProjectCard({ project, priority = false }: ProjectCardProps) {
 					<ul className="mt-auto flex flex-wrap gap-2 pt-2" aria-label="Teknologi">
 						{project.tech_stack.slice(0, MAX_BADGES).map((tech) => (
 							<li key={tech}>
-								<Badge>{tech}</Badge>
+								<TechTag tech={tech} />
 							</li>
 						))}
 						{extraTech > 0 && (
-							<li>
-								<Badge>+{extraTech}</Badge>
-							</li>
+							<li className="text-xs font-medium text-muted">+{extraTech} lebih</li>
 						)}
 					</ul>
 				)}
